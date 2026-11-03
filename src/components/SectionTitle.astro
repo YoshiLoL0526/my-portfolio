@@ -2,22 +2,17 @@
 interface Props {
   title: string;
   subtitle?: string;
-  color?: 'pink' | 'blue' | 'green' | 'yellow' | 'purple';
+  /** Texto pequeño sobre el título (p. ej. número de sección). */
+  eyebrow?: string;
   /** h1 en páginas propias, h2 en secciones de la home. */
   as?: 'h1' | 'h2';
 }
 
-const { title, subtitle, color = 'yellow', as: Heading = 'h2' } = Astro.props;
-const bg = {
-  pink: 'bg-pink',
-  blue: 'bg-blue',
-  green: 'bg-green',
-  yellow: 'bg-yellow',
-  purple: 'bg-purple',
-}[color];
+const { title, subtitle, eyebrow, as: Heading = 'h2' } = Astro.props;
 ---
 
 <div class="mb-10">
-  <Heading class:list={['brutal on-accent inline-block -rotate-1 px-4 py-2 text-3xl sm:text-5xl', bg]}>{title}</Heading>
-  {subtitle && <p class="text-muted mt-5 max-w-2xl text-lg">{subtitle}</p>}
+  {eyebrow && <p class="eyebrow mb-3">{eyebrow}</p>}
+  <Heading class:list={[Heading === 'h1' ? 'text-4xl sm:text-5xl' : 'text-3xl sm:text-4xl']}>{title}</Heading>
+  {subtitle && <p class="text-muted mt-4 max-w-2xl text-lg">{subtitle}</p>}
 </div>

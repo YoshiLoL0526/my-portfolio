@@ -21,20 +21,20 @@ const links = [
 ];
 ---
 
-<header class="sticky top-0 z-40 px-4 pt-4">
-  <nav
-    class="brutal bg-surface mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3"
-    aria-label={t('nav.label')}
-  >
-    <a href={home} class="font-display text-xl uppercase">
-      {site.name}<span class="text-pink">.</span>
+<header class="border-border/0 bg-bg/80 sticky top-0 z-40 border-b backdrop-blur-md transition-colors" data-header>
+  <nav class="mx-auto flex h-16 max-w-5xl items-center justify-between gap-4 px-5" aria-label={t('nav.label')}>
+    <a href={home} class="flex items-center gap-2.5 font-semibold tracking-tight">
+      <span class="bg-fg text-bg grid size-7 place-items-center rounded-md text-sm" aria-hidden="true">
+        {site.name.slice(0, 1)}
+      </span>
+      {site.name}
     </a>
 
     <ul class="hidden items-center gap-1 md:flex">
       {
         links.map(({ href, label }) => (
           <li>
-            <a href={href} class="hover:bg-yellow hover:text-on-accent px-3 py-2 font-bold uppercase">
+            <a href={href} class="text-muted hover:text-fg rounded-md px-3 py-2 text-sm transition-colors">
               {label}
             </a>
           </li>
@@ -42,18 +42,20 @@ const links = [
       }
     </ul>
 
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-1">
       <LanguagePicker lang={lang} />
       <ThemeToggle label={t('theme.toggle')} />
       <details class="relative md:hidden">
-        <summary class="brutal-sm bg-yellow on-accent cursor-pointer list-none px-3 py-2 font-bold uppercase">
-          Menu
+        <summary class="icon-btn cursor-pointer list-none" aria-label="Menu">
+          <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <path d="M4 7h16M4 12h16M4 17h16"></path>
+          </svg>
         </summary>
-        <ul class="brutal bg-surface absolute right-0 mt-3 flex w-48 flex-col p-2">
+        <ul class="card absolute right-0 mt-2 flex w-52 flex-col p-1.5 shadow-hover">
           {
             links.map(({ href, label }) => (
               <li>
-                <a href={href} class="hover:bg-yellow hover:text-on-accent block px-3 py-2 font-bold uppercase">
+                <a href={href} class="text-muted hover:bg-subtle hover:text-fg block rounded-md px-3 py-2 text-sm">
                   {label}
                 </a>
               </li>
@@ -70,4 +72,12 @@ const links = [
   document.querySelectorAll('header details a').forEach((link) => {
     link.addEventListener('click', () => link.closest('details')?.removeAttribute('open'));
   });
+
+  // El borde inferior solo aparece al hacer scroll.
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  if (header) {
+    const update = () => header.classList.toggle('border-border/100', scrollY > 8);
+    update();
+    addEventListener('scroll', update, { passive: true });
+  }
 </script>

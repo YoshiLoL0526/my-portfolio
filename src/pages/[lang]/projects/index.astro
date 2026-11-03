@@ -28,28 +28,28 @@ const searchText = ({ title, description, tags, category }: (typeof projects)[nu
     .toLowerCase();
 
 const chip =
-  'brutal-sm press has-checked:bg-yellow has-checked:text-on-accent has-focus-visible:outline-3 has-focus-visible:outline-offset-2 has-focus-visible:outline-ink bg-surface inline-flex cursor-pointer items-center gap-2 px-3 py-1.5 font-bold select-none';
+  'border-border bg-surface text-muted hover:border-border-strong hover:text-fg has-checked:border-fg has-checked:bg-fg has-checked:text-bg has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-accent inline-flex cursor-pointer items-center gap-2 rounded-full border px-3 py-1 text-sm transition-colors select-none';
 ---
 
 <BaseLayout lang={lang} title={t('projects.title')} description={t('projects.page.subtitle')}>
-  <section class="mx-auto max-w-6xl px-4 pt-14 pb-10">
-    <SectionTitle as="h1" title={t('projects.title')} subtitle={t('projects.page.subtitle')} color="blue" />
+  <section class="mx-auto max-w-5xl px-5 pt-16 pb-24">
+    <SectionTitle as="h1" title={t('projects.title')} subtitle={t('projects.page.subtitle')} />
 
-    <form class="brutal bg-surface space-y-6 p-5 sm:p-6" data-project-filters role="search">
+    <form class="card space-y-6 p-5 sm:p-6" data-project-filters role="search">
       <div class="grid gap-4 sm:grid-cols-[1fr_auto]">
         <label class="block">
-          <span class="mb-2 block font-bold uppercase">{t('filters.search')}</span>
+          <span class="label">{t('filters.search')}</span>
           <input
             type="search"
             name="q"
             placeholder={t('filters.search.placeholder')}
             autocomplete="off"
-            class="brutal-sm bg-paper focus:bg-surface focus:shadow-brutal w-full px-4 py-3 font-medium outline-none"
+            class="field"
           />
         </label>
         <label class="block">
-          <span class="mb-2 block font-bold uppercase">{t('filters.sort')}</span>
-          <select name="sort" class="brutal-sm bg-paper w-full cursor-pointer px-4 py-3 font-bold sm:w-56">
+          <span class="label">{t('filters.sort')}</span>
+          <select name="sort" class="field cursor-pointer sm:w-56">
             <option value="newest">{t('filters.sort.newest')}</option>
             <option value="oldest">{t('filters.sort.oldest')}</option>
             <option value="title">{t('filters.sort.title')}</option>
@@ -58,8 +58,8 @@ const chip =
       </div>
 
       <fieldset>
-        <legend class="mb-3 font-bold uppercase">{t('filters.category')}</legend>
-        <div class="flex flex-wrap gap-3">
+        <legend class="label mb-3">{t('filters.category')}</legend>
+        <div class="flex flex-wrap gap-2">
           <label class={chip}>
             <input type="radio" name="category" value="" checked class="sr-only" />
             {t('filters.all')}
@@ -76,29 +76,29 @@ const chip =
       </fieldset>
 
       <fieldset>
-        <legend class="mb-3 font-bold uppercase">{t('filters.tech')}</legend>
+        <legend class="label mb-3">{t('filters.tech')}</legend>
         <div class="flex flex-wrap gap-3">
           {
             tags.map(([tag, count]) => (
               <label class={chip}>
                 <input type="checkbox" name="tech" value={tag} class="sr-only" />
                 {tag}
-                <span class="font-mono text-xs opacity-70">{count}</span>
+                <span class="font-mono text-xs opacity-60">{count}</span>
               </label>
             ))
           }
         </div>
       </fieldset>
 
-      <div class="border-ink flex flex-wrap items-center justify-between gap-4 border-t-3 pt-5">
-        <p class="font-mono font-bold" aria-live="polite">
-          <span data-result-count>{projects.length}</span> / {projects.length} {t('filters.results')}
+      <div class="border-border flex flex-wrap items-center justify-between gap-4 border-t pt-5">
+        <p class="text-muted text-sm" aria-live="polite">
+          <span class="text-fg font-medium" data-result-count>{projects.length}</span> / {projects.length} {t('filters.results')}
         </p>
-        <button type="reset" class="btn bg-pink px-4 py-2 text-sm">{t('filters.clear')} ✕</button>
+        <button type="reset" class="btn btn-ghost h-9">{t('filters.clear')}</button>
       </div>
     </form>
 
-    <ul class="mt-12 grid gap-8 md:grid-cols-2" data-project-list>
+    <ul class="mt-10 grid gap-6 md:grid-cols-2" data-project-list>
       {
         projects.map((project) => (
           <li
@@ -115,9 +115,9 @@ const chip =
       }
     </ul>
 
-    <div class="brutal bg-yellow on-accent mt-12 hidden p-8 text-center" data-empty-state>
-      <p class="font-display text-3xl uppercase">{t('filters.empty.title')}</p>
-      <p class="mt-2 text-lg">{t('filters.empty.body')}</p>
+    <div class="border-border mt-10 hidden rounded-xl border border-dashed p-12 text-center" data-empty-state>
+      <p class="font-semibold">{t('filters.empty.title')}</p>
+      <p class="text-muted mt-1 text-sm">{t('filters.empty.body')}</p>
     </div>
   </section>
 </BaseLayout>

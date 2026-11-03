@@ -1,151 +1,193 @@
 @import 'tailwindcss';
-@import '@fontsource/archivo-black/400.css';
-@import '@fontsource-variable/space-grotesk';
-@import '@fontsource/space-mono/400.css';
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/jetbrains-mono';
 
 @custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
 
 /* ---------- Tokens ---------- */
 :root {
-  --paper: #fff6d6;
+  --bg: #fafafa;
   --surface: #ffffff;
-  --ink: #111111;
-  --muted: #4a4636;
-  /* Los acentos son los mismos en ambos temas; el texto sobre ellos siempre es tinta oscura. */
-  --pink: #ff6b9d;
-  --blue: #7cd1ff;
-  --green: #b8f28b;
-  --yellow: #ffd23f;
-  --purple: #c4a1ff;
-  --on-accent: #111111;
-  --shadow: 5px 5px 0 var(--ink);
-  --shadow-sm: 3px 3px 0 var(--ink);
-  --shadow-lg: 8px 8px 0 var(--ink);
+  --subtle: #f4f4f5;
+  --fg: #0a0a0a;
+  --muted: #525252;
+  --faint: #a3a3a3;
+  --border: #e5e5e5;
+  --border-strong: #d4d4d4;
+  --accent: #2563eb;
+  --accent-fg: #ffffff;
+  --accent-soft: color-mix(in srgb, var(--accent) 10%, transparent);
+  --danger: #dc2626;
+  /* Tonos suaves para las portadas sin imagen (campo `color` de cada proyecto). */
+  --tint-pink: #fce7f3;
+  --tint-blue: #dbeafe;
+  --tint-green: #dcfce7;
+  --tint-yellow: #fef3c7;
+  --tint-purple: #ede9fe;
+  --elev-card: 0 1px 2px rgb(0 0 0 / 0.04), 0 1px 1px rgb(0 0 0 / 0.02);
+  --elev-hover: 0 8px 24px -8px rgb(0 0 0 / 0.12), 0 2px 6px rgb(0 0 0 / 0.04);
   color-scheme: light;
 }
 
 [data-theme='dark'] {
-  --paper: #16140f;
-  --surface: #242019;
-  --ink: #fff6d6;
-  --muted: #c9c1a6;
+  --bg: #09090b;
+  --surface: #111113;
+  --subtle: #18181b;
+  --fg: #fafafa;
+  --muted: #a1a1aa;
+  --faint: #71717a;
+  --border: #27272a;
+  --border-strong: #3f3f46;
+  --accent: #3b82f6;
+  --danger: #f87171;
+  --tint-pink: #2a1720;
+  --tint-blue: #142035;
+  --tint-green: #13261b;
+  --tint-yellow: #2a2212;
+  --tint-purple: #1f1a33;
+  --elev-card: none;
+  --elev-hover: 0 8px 24px -8px rgb(0 0 0 / 0.6);
   color-scheme: dark;
 }
 
 @theme inline {
-  --font-display: 'Archivo Black', 'Arial Black', sans-serif;
-  --font-sans: 'Space Grotesk Variable', system-ui, sans-serif;
-  --font-mono: 'Space Mono', ui-monospace, monospace;
+  --font-sans: 'Inter Variable', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
 
-  --color-paper: var(--paper);
+  --color-bg: var(--bg);
   --color-surface: var(--surface);
-  --color-ink: var(--ink);
+  --color-subtle: var(--subtle);
+  --color-fg: var(--fg);
   --color-muted: var(--muted);
-  --color-pink: var(--pink);
-  --color-blue: var(--blue);
-  --color-green: var(--green);
-  --color-yellow: var(--yellow);
-  --color-purple: var(--purple);
-  --color-on-accent: var(--on-accent);
+  --color-faint: var(--faint);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --color-accent-soft: var(--accent-soft);
+  --color-danger: var(--danger);
+  --color-tint-pink: var(--tint-pink);
+  --color-tint-blue: var(--tint-blue);
+  --color-tint-green: var(--tint-green);
+  --color-tint-yellow: var(--tint-yellow);
+  --color-tint-purple: var(--tint-purple);
 
-  --shadow-brutal-sm: var(--shadow-sm);
-  --shadow-brutal: var(--shadow);
-  --shadow-brutal-lg: var(--shadow-lg);
+  --shadow-card: var(--elev-card);
+  --shadow-hover: var(--elev-hover);
 }
 
 /* ---------- Base ---------- */
 @layer base {
   html {
     scroll-behavior: smooth;
-    scroll-padding-top: 6rem;
+    scroll-padding-top: 5rem;
   }
 
   body {
-    background-color: var(--paper);
-    color: var(--ink);
+    background-color: var(--bg);
+    color: var(--fg);
     font-family: var(--font-sans);
+    font-feature-settings: 'cv11', 'ss01';
     -webkit-font-smoothing: antialiased;
-    /* Cuadrícula sutil de fondo, típica del neo-brutalismo. */
-    background-image:
-      linear-gradient(color-mix(in srgb, var(--ink) 6%, transparent) 1px, transparent 1px),
-      linear-gradient(90deg, color-mix(in srgb, var(--ink) 6%, transparent) 1px, transparent 1px);
-    background-size: 32px 32px;
   }
 
   h1,
   h2,
   h3 {
-    font-family: var(--font-display);
-    line-height: 1.05;
-    text-transform: uppercase;
-    letter-spacing: -0.01em;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    text-wrap: balance;
   }
 
   ::selection {
-    background: var(--pink);
-    color: var(--on-accent);
+    background: color-mix(in srgb, var(--accent) 25%, transparent);
   }
 
   :focus-visible {
-    outline: 3px solid var(--ink);
-    outline-offset: 3px;
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 4px;
   }
 }
 
-/* ---------- Utilidades del sistema ---------- */
-@utility brutal {
-  border: 3px solid var(--ink);
-  box-shadow: var(--shadow);
-}
-
-@utility brutal-sm {
-  border: 2px solid var(--ink);
-  box-shadow: var(--shadow-sm);
-}
-
-/* Elemento que "se hunde" al pulsarlo: se desplaza hacia su sombra. */
-@utility press {
-  transition:
-    transform 120ms ease,
-    box-shadow 120ms ease;
-
-  &:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: var(--shadow-lg);
-  }
-
-  &:active {
-    transform: translate(4px, 4px);
-    box-shadow: 0 0 0 var(--ink);
-  }
-}
-
-@utility on-accent {
-  color: var(--on-accent);
-}
-
-/* Los colores de acento con texto oscuro se ven bien en ambos temas. */
+/* ---------- Componentes ---------- */
 @layer components {
+  .card {
+    @apply border-border bg-surface shadow-card rounded-xl border;
+  }
+
   .btn {
-    @apply brutal-sm press on-accent inline-flex items-center gap-2 px-5 py-3 font-bold uppercase tracking-wide;
+    @apply inline-flex h-10 items-center justify-center gap-2 rounded-lg px-4 text-sm font-medium whitespace-nowrap transition-colors disabled:pointer-events-none disabled:opacity-60;
+  }
+
+  .btn-primary {
+    @apply bg-fg text-bg hover:opacity-85;
+  }
+
+  .btn-secondary {
+    @apply border-border bg-surface text-fg hover:bg-subtle border;
+  }
+
+  .btn-ghost {
+    @apply text-muted hover:bg-subtle hover:text-fg;
+  }
+
+  .icon-btn {
+    @apply text-muted hover:bg-subtle hover:text-fg grid size-9 place-items-center rounded-lg transition-colors;
+  }
+
+  .field {
+    @apply border-border bg-surface placeholder:text-faint focus:border-accent focus:ring-accent/20 w-full rounded-lg border px-3 py-2.5 text-sm transition outline-none focus:ring-4;
+  }
+
+  .label {
+    @apply text-fg mb-1.5 block text-sm font-medium;
+  }
+
+  .tag {
+    @apply border-border bg-subtle text-muted inline-flex items-center rounded-md border px-2 py-0.5 font-mono text-xs;
+  }
+
+  .eyebrow {
+    @apply text-accent font-mono text-xs font-medium tracking-wider uppercase;
+  }
+
+  .link {
+    @apply text-fg decoration-border-strong hover:decoration-fg underline underline-offset-4 transition-colors;
   }
 }
 
 /* Estilos para el HTML que genera Markdown (detalle de proyecto y experiencia). */
 @layer components {
-  .prose-brutal {
+  .prose-content {
+    line-height: 1.75;
+
     & > * + * {
       margin-top: 1em;
     }
 
     & h2,
     & h3 {
-      margin-top: 1.6em;
+      margin-top: 2em;
+      color: var(--fg);
+    }
+
+    & h2 {
       font-size: 1.5rem;
     }
 
+    & h3 {
+      font-size: 1.2rem;
+    }
+
+    & strong {
+      color: var(--fg);
+      font-weight: 600;
+    }
+
     & ul {
-      list-style: square;
+      list-style: disc;
       padding-left: 1.25em;
     }
 
@@ -154,48 +196,61 @@
       padding-left: 1.25em;
     }
 
+    & li::marker {
+      color: var(--faint);
+    }
+
     & li + li {
       margin-top: 0.35em;
     }
 
     & a {
-      font-weight: 700;
+      color: var(--fg);
       text-decoration: underline;
-      text-decoration-thickness: 2px;
+      text-decoration-color: var(--border-strong);
       text-underline-offset: 4px;
+
+      &:hover {
+        text-decoration-color: var(--fg);
+      }
     }
 
     & code {
       font-family: var(--font-mono);
-      font-size: 0.9em;
-      background: var(--yellow);
-      color: var(--on-accent);
+      font-size: 0.875em;
+      background: var(--subtle);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--fg);
       padding: 0.1em 0.35em;
     }
 
     & pre {
-      border: 3px solid var(--ink);
-      background: #111;
-      color: #fff6d6;
-      padding: 1rem;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #0a0a0a;
+      color: #e5e5e5;
+      padding: 1rem 1.25rem;
       overflow-x: auto;
+      font-size: 0.875rem;
 
       & code {
         background: none;
+        border: 0;
         color: inherit;
         padding: 0;
       }
     }
 
     & img {
-      border: 3px solid var(--ink);
-      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      border-radius: 12px;
     }
 
     & blockquote {
-      border-left: 6px solid var(--pink);
+      border-left: 2px solid var(--border-strong);
       padding-left: 1rem;
-      font-style: italic;
+      color: var(--muted);
     }
   }
 }

@@ -23,15 +23,15 @@ import { localePath } from '@/i18n/utils';
       } catch {}
     </script>
   </head>
-  <body class="grid min-h-dvh place-items-center p-4">
-    <main class="brutal bg-surface w-full max-w-xl p-8 text-center sm:p-12">
-      <p class="font-display text-pink text-8xl sm:text-9xl" style="-webkit-text-stroke: 3px var(--ink)">404</p>
-      <h1 class="mt-6 text-2xl sm:text-3xl">{ui.es['404.title']}</h1>
-      <p class="text-muted mt-2">{ui.es['404.body']}</p>
-      <p lang="en" class="text-muted mt-4 font-mono text-sm">{ui.en['404.title']} — {ui.en['404.body']}</p>
-      <div class="mt-8 flex flex-wrap justify-center gap-4">
-        <a href={localePath('es')} class="btn bg-yellow">{ui.es['404.back']}</a>
-        <a href={localePath('en')} lang="en" class="btn bg-blue">{ui.en['404.back']}</a>
+  <body class="grid min-h-dvh place-items-center p-5">
+    <main class="w-full max-w-md text-center">
+      <p class="eyebrow">Error 404</p>
+      <h1 class="mt-4 text-3xl sm:text-4xl">{ui.es['404.title']}</h1>
+      <p class="text-muted mt-3">{ui.es['404.body']}</p>
+      <p lang="en" class="text-faint mt-2 text-sm">{ui.en['404.title']} — {ui.en['404.body']}</p>
+      <div class="mt-8 flex flex-wrap justify-center gap-3">
+        <a href={localePath('es')} class="btn btn-primary">{ui.es['404.back']}</a>
+        <a href={localePath('en')} lang="en" class="btn btn-secondary">{ui.en['404.back']}</a>
       </div>
     </main>
   </body>

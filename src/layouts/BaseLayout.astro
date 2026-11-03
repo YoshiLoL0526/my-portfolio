@@ -39,7 +39,8 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:description" content={pageDescription} />
     <meta property="og:url" content={canonical} />
     <meta property="og:locale" content={lang === 'es' ? 'es_ES' : 'en_US'} />
-    <meta name="theme-color" content="#fff6d6" />
+    <meta name="theme-color" content="#fafafa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#09090b" media="(prefers-color-scheme: dark)" />
     <script is:inline>
       // Se ejecuta antes de pintar para evitar el parpadeo de tema.
       (() => {
@@ -54,15 +55,15 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
       })();
     </script>
   </head>
-  <body class="min-h-dvh">
+  <body class="flex min-h-dvh flex-col">
     <a
       href="#main"
-      class="brutal-sm on-accent sr-only bg-yellow px-4 py-2 font-bold focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50"
+      class="btn btn-primary sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50"
     >
       {t('nav.skip')}
     </a>
     <Header lang={lang} />
-    <main id="main">
+    <main id="main" class="flex-1">
       <slot />
     </main>
     <Footer lang={lang} />

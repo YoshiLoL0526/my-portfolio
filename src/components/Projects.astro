@@ -17,14 +17,16 @@ const t = useTranslations(lang);
 const projects = await getProjects(lang);
 ---
 
-<section id="projects" class="mx-auto max-w-6xl px-4 py-20">
-  <SectionTitle title={t('projects.title')} subtitle={t('projects.subtitle')} color="blue" />
-  <div class="grid gap-8 md:grid-cols-2">
-    {projects.slice(0, HOME_LIMIT).map((project) => <ProjectCard project={project} lang={lang} />)}
-  </div>
-  <div class="mt-12 flex justify-center">
-    <a href={localePath(lang, 'projects')} class="btn bg-yellow">
-      {t('projects.all')} ({projects.length}) →
-    </a>
+<section id="projects" class="border-border border-t">
+  <div class="mx-auto max-w-5xl px-5 py-24">
+    <div class="flex flex-wrap items-end justify-between gap-6">
+      <SectionTitle eyebrow="02" title={t('projects.title')} subtitle={t('projects.subtitle')} />
+      <a href={localePath(lang, 'projects')} class="btn btn-secondary mb-10">
+        {t('projects.all')} ({projects.length}) <span aria-hidden="true">→</span>
+      </a>
+    </div>
+    <div class="grid gap-6 md:grid-cols-2">
+      {projects.slice(0, HOME_LIMIT).map((project) => <ProjectCard project={project} lang={lang} />)}
+    </div>
   </div>
 </section>

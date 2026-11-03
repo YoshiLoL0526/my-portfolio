@@ -13,36 +13,49 @@ const { project, lang } = Astro.props;
 const { title, description, tags, cover, featured, color } = project.data;
 const t = useTranslations(lang);
 const href = localePath(lang, `projects/${splitEntryId(project.id).slug}`);
-const bg = { pink: 'bg-pink', blue: 'bg-blue', green: 'bg-green', yellow: 'bg-yellow', purple: 'bg-purple' }[color];
+const tint = {
+  pink: 'bg-tint-pink',
+  blue: 'bg-tint-blue',
+  green: 'bg-tint-green',
+  yellow: 'bg-tint-yellow',
+  purple: 'bg-tint-purple',
+}[color];
 ---
 
-<article class="brutal press bg-surface group relative flex flex-col">
-  <div class:list={['border-ink relative aspect-video overflow-hidden border-b-3', bg]}>
+<article class="card group hover:border-border-strong hover:shadow-hover relative flex flex-col overflow-hidden transition">
+  <div class:list={['border-border relative aspect-[16/9] overflow-hidden border-b', tint]}>
     {
       cover ? (
-        <Image src={cover} alt="" class="size-full object-cover" widths={[400, 800]} sizes="(min-width: 768px) 50vw, 100vw" />
+        <Image
+          src={cover}
+          alt=""
+          class="size-full object-cover transition duration-500 group-hover:scale-[1.02]"
+          widths={[400, 800]}
+          sizes="(min-width: 768px) 50vw, 100vw"
+        />
       ) : (
-        <span class="font-display on-accent absolute inset-0 grid place-items-center p-4 text-center text-3xl uppercase">
+        <span class="text-fg/70 absolute inset-0 grid place-items-center p-6 text-center text-2xl font-semibold tracking-tight">
           {title}
         </span>
       )
     }
     {
       featured && (
-        <span class="brutal-sm bg-yellow on-accent absolute top-3 right-3 rotate-3 px-2 py-1 font-mono text-xs font-bold uppercase">
-          ★ {t('projects.featured')}
+        <span class="bg-surface/90 border-border absolute top-3 left-3 rounded-full border px-2.5 py-0.5 text-xs font-medium backdrop-blur">
+          {t('projects.featured')}
         </span>
       )
     }
   </div>
   <div class="flex flex-1 flex-col p-5">
-    <h3 class="text-xl">
+    <h3 class="flex items-center justify-between gap-3 text-base">
       <!-- El enlace cubre toda la tarjeta mediante el pseudo-elemento. -->
       <a href={href} class="after:absolute after:inset-0">{title}</a>
+      <span class="text-faint group-hover:text-fg transition group-hover:translate-x-0.5" aria-hidden="true">→</span>
     </h3>
-    <p class="text-muted mt-2 flex-1">{description}</p>
-    <ul class="mt-4 flex flex-wrap gap-2 font-mono text-xs">
-      {tags.map((tag) => <li class="border-ink border-2 px-2 py-0.5 font-bold">{tag}</li>)}
+    <p class="text-muted mt-2 flex-1 text-sm leading-relaxed">{description}</p>
+    <ul class="mt-4 flex flex-wrap gap-1.5">
+      {tags.map((tag) => <li class="tag">{tag}</li>)}
     </ul>
   </div>
 </article>

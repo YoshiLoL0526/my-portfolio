@@ -1,6 +1,6 @@
 ---
 title: Este portfolio
-description: Web estática multilingüe con Astro, Tailwind y estética neo-brutalista.
+description: Web estática multilingüe con Astro, Tailwind y un diseño minimalista.
 tags: [Astro, TypeScript, Tailwind CSS]
 repo: https://github.com/
 date: 2026-11-03

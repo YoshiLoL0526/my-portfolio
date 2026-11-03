@@ -1,6 +1,6 @@
 ---
 title: This portfolio
-description: Multilingual static site built with Astro, Tailwind and a neo-brutalist look.
+description: Multilingual static site built with Astro, Tailwind and a clean, minimal design.
 tags: [Astro, TypeScript, Tailwind CSS]
 repo: https://github.com/
 date: 2026-11-03
