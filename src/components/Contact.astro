@@ -14,13 +14,17 @@ const t = useTranslations(lang);
 
 <section id="contact" class="border-border border-t">
   <div class="mx-auto max-w-5xl px-5 py-24">
-    <SectionTitle eyebrow="04" title={t('contact.title')} subtitle={t('contact.subtitle')} />
+    <div data-reveal>
+      <SectionTitle eyebrow="04" title={t('contact.headline')} subtitle={t('contact.subtitle')} />
+    </div>
 
     <div class="grid gap-6 lg:grid-cols-[1.6fr_1fr]">
       <form
         action="https://api.web3forms.com/submit"
         method="POST"
         class="card space-y-5 p-6 sm:p-8"
+        data-reveal
+        style="--reveal-delay: 60ms"
         data-contact-form
         data-sending={t('contact.sending')}
         data-success={t('contact.success')}
@@ -53,29 +57,47 @@ const t = useTranslations(lang);
         </div>
       </form>
 
-      <aside class="card flex flex-col gap-6 p-6 sm:p-8">
+      <aside class="card flex flex-col gap-6 p-6 sm:p-8" data-reveal style="--reveal-delay: 140ms">
+        <p class="text-muted flex items-center gap-2 text-xs font-medium">
+          <span class="relative flex size-2" aria-hidden="true">
+            <span class="absolute inset-0 rounded-full bg-emerald-500/40"></span>
+            <span class="relative size-2 rounded-full bg-emerald-500"></span>
+          </span>
+          {t('hero.available')}
+        </p>
+
         <div>
           <p class="font-semibold">{t('contact.direct')}</p>
           <p class="text-muted mt-1 text-sm">{t('contact.or')}</p>
           <a href={`mailto:${site.email}`} class="link mt-3 inline-block font-mono text-sm break-all">{site.email}</a>
         </div>
-        <ul class="border-border mt-auto flex flex-col gap-2 border-t pt-6">
-          {
-            site.socials.map(({ label, href }) => (
-              <li>
-                <a
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="text-muted hover:bg-subtle hover:text-fg -mx-2 flex items-center justify-between rounded-md px-2 py-1.5 text-sm transition-colors"
-                >
-                  {label}
-                  <span aria-hidden="true">↗</span>
-                </a>
-              </li>
-            ))
-          }
-        </ul>
+
+        <div class="border-border mt-auto border-t pt-6">
+          <p class="text-muted flex items-center gap-2 text-sm">
+            <svg class="text-faint size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="9"></circle>
+              <path d="M12 7v5l3 2"></path>
+            </svg>
+            {t('contact.note')}
+          </p>
+          <ul class="mt-4 flex flex-col gap-2">
+            {
+              site.socials.map(({ label, href }) => (
+                <li>
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-muted hover:bg-subtle hover:text-fg -mx-2 flex items-center justify-between rounded-md px-2 py-1.5 text-sm transition-colors"
+                  >
+                    {label}
+                    <span aria-hidden="true">↗</span>
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
       </aside>
     </div>
   </div>
@@ -83,33 +105,37 @@ const t = useTranslations(lang);
 
 <script>
   // Envío con fetch para no salir de la página. Sin JS, el formulario se envía de forma normal.
-  document.querySelectorAll<HTMLFormElement>('[data-contact-form]').forEach((form) => {
-    const status = form.querySelector<HTMLElement>('[data-form-status]')!;
-    const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
-    const { sending, success, error } = form.dataset;
+  function initContactForms() {
+    document.querySelectorAll<HTMLFormElement>('[data-contact-form]').forEach((form) => {
+      const status = form.querySelector<HTMLElement>('[data-form-status]')!;
+      const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+      const { sending, success, error } = form.dataset;
 
-    form.addEventListener('submit', async (event) => {
-      event.preventDefault();
-      button.disabled = true;
-      status.textContent = sending ?? '';
-      status.classList.remove('text-danger');
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        button.disabled = true;
+        status.textContent = sending ?? '';
+        status.classList.remove('text-danger');
 
-      try {
-        const response = await fetch(form.action, {
-          method: 'POST',
-          headers: { Accept: 'application/json' },
-          body: new FormData(form),
-        });
-        const result = (await response.json()) as { success?: boolean };
-        if (!response.ok || !result.success) throw new Error('Web3Forms rejected the submission');
-        status.textContent = success ?? '';
-        form.reset();
-      } catch {
-        status.textContent = error ?? '';
-        status.classList.add('text-danger');
-      } finally {
-        button.disabled = false;
-      }
+        try {
+          const response = await fetch(form.action, {
+            method: 'POST',
+            headers: { Accept: 'application/json' },
+            body: new FormData(form),
+          });
+          const result = (await response.json()) as { success?: boolean };
+          if (!response.ok || !result.success) throw new Error('Web3Forms rejected the submission');
+          status.textContent = success ?? '';
+          form.reset();
+        } catch {
+          status.textContent = error ?? '';
+          status.classList.add('text-danger');
+        } finally {
+          button.disabled = false;
+        }
+      });
     });
-  });
+  }
+
+  document.addEventListener('astro:page-load', initContactForms);
 </script>

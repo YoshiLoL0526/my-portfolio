@@ -15,18 +15,38 @@ const HOME_LIMIT = 4;
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const projects = await getProjects(lang);
+const [featured, ...rest] = projects.slice(0, HOME_LIMIT);
 ---
 
 <section id="projects" class="border-border border-t">
   <div class="mx-auto max-w-5xl px-5 py-24">
-    <div class="flex flex-wrap items-end justify-between gap-6">
+    <div class="flex flex-wrap items-end justify-between gap-6" data-reveal>
       <SectionTitle eyebrow="02" title={t('projects.title')} subtitle={t('projects.subtitle')} />
       <a href={localePath(lang, 'projects')} class="btn btn-secondary mb-10">
         {t('projects.all')} ({projects.length}) <span aria-hidden="true">→</span>
       </a>
     </div>
-    <div class="grid gap-6 md:grid-cols-2">
-      {projects.slice(0, HOME_LIMIT).map((project) => <ProjectCard project={project} lang={lang} />)}
+
+    <div class="grid gap-6">
+      {
+        featured && (
+          <div class="h-full" data-reveal style="--reveal-delay: 80ms">
+            <ProjectCard project={featured} lang={lang} index={1} variant="featured" />
+          </div>
+        )
+      }
+
+      {
+        rest.length > 0 && (
+          <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {rest.map((project, index) => (
+              <div class="h-full" data-reveal style={`--reveal-delay: ${160 + index * 70}ms`}>
+                <ProjectCard project={project} lang={lang} index={index + 2} />
+              </div>
+            ))}
+          </div>
+        )
+      }
     </div>
   </div>
 </section>

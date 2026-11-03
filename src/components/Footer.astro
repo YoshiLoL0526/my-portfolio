@@ -1,4 +1,5 @@
 ---
+import Logo from './Logo.astro';
 import { site } from '@/data/site';
 import { useTranslations } from '@/i18n/utils';
 import type { Lang } from '@/i18n/ui';
@@ -13,18 +14,72 @@ const year = new Date().getFullYear();
 ---
 
 <footer class="border-border border-t">
-  <div class="text-muted mx-auto flex max-w-5xl flex-col items-center justify-between gap-4 px-5 py-8 text-sm sm:flex-row">
-    <p>© {year} {site.name}. {t('footer.made')}</p>
-    <ul class="flex gap-5">
-      {
-        site.socials.map(({ label, href }) => (
-          <li>
-            <a href={href} target="_blank" rel="noopener noreferrer" class="hover:text-fg transition-colors">
-              {label}
-            </a>
-          </li>
-        ))
-      }
-    </ul>
+  <div
+    class="text-muted mx-auto flex max-w-5xl flex-col gap-5 px-5 py-8 text-sm sm:flex-row sm:items-center sm:justify-between"
+  >
+    <p class="flex items-center gap-2">
+      <Logo class="text-faint size-3.5" />
+      <span>© {year} {site.name}. {t('footer.made')}</span>
+    </p>
+
+    <div class="flex flex-wrap items-center gap-x-5 gap-y-3">
+      <span class="text-muted flex items-center gap-2 font-mono text-xs" title={t('footer.local')}>
+        <svg class="text-faint size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="M12 7v5l3 2"></path>
+        </svg>
+        <span>{site.location}</span>
+        <span class="text-faint" aria-hidden="true">·</span>
+        <span data-clock data-timezone={site.timeZone}>--:--</span>
+      </span>
+
+      <a href="#" class="hover:text-fg inline-flex items-center gap-1.5 transition-colors">
+        {t('footer.top')}
+        <span aria-hidden="true">↑</span>
+      </a>
+
+      <ul class="flex gap-4">
+        {
+          site.socials.map(({ label, href }) => (
+            <li>
+              <a href={href} target="_blank" rel="noopener noreferrer" class="hover:text-fg transition-colors">
+                {label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
   </div>
 </footer>
+
+<script>
+  let clockTimer: number | undefined;
+
+  function initClock() {
+    const clock = document.querySelector<HTMLElement>('[data-clock]');
+    if (!clock) return;
+
+    if (clockTimer) clearInterval(clockTimer);
+
+    const locale = document.documentElement.lang === 'es' ? 'es-ES' : 'en-GB';
+    const timeZone = clock.dataset.timezone;
+    const options: Intl.DateTimeFormatOptions = { hour: '2-digit', minute: '2-digit', hour12: false };
+
+    let formatter: Intl.DateTimeFormat;
+    try {
+      formatter = new Intl.DateTimeFormat(locale, { ...options, timeZone });
+    } catch {
+      formatter = new Intl.DateTimeFormat(locale, options);
+    }
+
+    const update = () => {
+      clock.textContent = formatter.format(new Date());
+    };
+
+    update();
+    clockTimer = window.setInterval(update, 30_000);
+  }
+
+  document.addEventListener('astro:page-load', initClock);
+</script>

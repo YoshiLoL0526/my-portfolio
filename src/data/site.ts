@@ -5,6 +5,8 @@ export const site = {
   email: 'hola@example.com', // TODO
   location: 'España', // TODO
   cv: '/cv.pdf', // TODO: coloca tu CV en public/cv.pdf
+  // Zona horaria que se muestra en el footer. Cámbiala si no estás en España.
+  timeZone: 'Europe/Madrid',
   socials: [
     { label: 'GitHub', href: 'https://github.com/' }, // TODO
     { label: 'LinkedIn', href: 'https://www.linkedin.com/in/' }, // TODO
@@ -22,4 +24,12 @@ export const skills = {
   frontend: ['TypeScript', 'React', 'Astro', 'Tailwind CSS', 'HTML y CSS'],
   backend: ['Node.js', 'Express', 'PostgreSQL', 'REST', 'Prisma'],
   tools: ['Git', 'Docker', 'Vite', 'Figma', 'Linux'],
+} as const;
+
+// Resumen curado del stack para la "system card" del hero.
+// Son las mismas tecnologías de `skills`, agrupadas por capa.
+export const stack = {
+  interface: ['Astro', 'React', 'Tailwind CSS'],
+  logic: ['Node.js', 'Express', 'REST'],
+  data: ['PostgreSQL', 'Prisma'],
 } as const;

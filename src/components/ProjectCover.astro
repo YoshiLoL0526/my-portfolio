@@ -1,0 +1,177 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import { splitEntryId, useTranslations } from '@/i18n/utils';
+import type { Lang } from '@/i18n/ui';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+  lang: Lang;
+  index?: number;
+  variant?: 'card' | 'featured' | 'detail';
+  class?: string;
+}
+
+const { project, lang, index, variant = 'card', class: className } = Astro.props;
+const { tags, cover, featured, color, category, date } = project.data;
+const t = useTranslations(lang);
+const { slug } = splitEntryId(project.id);
+
+const tint = {
+  pink: 'bg-tint-pink',
+  blue: 'bg-tint-blue',
+  green: 'bg-tint-green',
+  yellow: 'bg-tint-yellow',
+  purple: 'bg-tint-purple',
+}[color];
+
+const glyphSize = {
+  card: 'size-24',
+  featured: 'size-32',
+  detail: 'size-44',
+}[variant];
+
+const indexSize = {
+  card: 'text-3xl',
+  featured: 'text-4xl',
+  detail: 'text-5xl',
+}[variant];
+
+const padding = {
+  card: 'p-4',
+  featured: 'p-5',
+  detail: 'p-6',
+}[variant];
+
+const year = date.getUTCFullYear();
+const metaTone = cover ? 'text-white/85' : 'text-fg/55';
+const metaMuted = cover ? 'text-white/45' : 'text-fg/30';
+const metaLabel = cover ? 'text-white/60' : 'text-fg/45';
+---
+
+<div
+  class:list={['project-cover relative h-full w-full overflow-hidden', tint, className]}
+  transition:name={`project-cover-${slug}`}
+>
+  <div class="cover-grid absolute inset-0" aria-hidden="true"></div>
+
+  {
+    cover ? (
+      <>
+        <Image
+          src={cover}
+          alt=""
+          class="size-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+          widths={[400, 800, 1200]}
+          sizes="(min-width: 1024px) 50vw, 100vw"
+        />
+        <div class="absolute inset-0 bg-gradient-to-b from-black/25 via-transparent to-black/20" aria-hidden="true" />
+      </>
+    ) : (
+      <div class:list={['absolute -right-2 -bottom-3 transition-transform duration-500 group-hover:-translate-x-1 group-hover:-translate-y-1 group-hover:rotate-2', glyphSize]}>
+        <svg
+          class="size-full text-fg/20"
+          viewBox="0 0 120 120"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          {
+            category === 'web' && (
+              <>
+                <rect x="20" y="24" width="80" height="72" rx="6" />
+                <path d="M20 42h80" />
+                <circle cx="30" cy="33" r="1.4" fill="currentColor" stroke="none" />
+                <circle cx="36" cy="33" r="1.4" fill="currentColor" stroke="none" />
+                <path d="M44 60 34 68l10 8M76 60l10 8-10 8M66 56l-12 24" />
+              </>
+            )
+          }
+          {
+            category === 'api' && (
+              <>
+                <circle cx="60" cy="28" r="10" />
+                <circle cx="30" cy="90" r="10" />
+                <circle cx="90" cy="90" r="10" />
+                <path d="m54 37-16 42M66 37l16 42M40 90h40" />
+                <circle cx="60" cy="28" r="2" fill="currentColor" stroke="none" />
+              </>
+            )
+          }
+          {
+            category === 'mobile' && (
+              <>
+                <rect x="42" y="18" width="36" height="84" rx="8" />
+                <path d="M54 27h12" />
+                <circle cx="60" cy="92" r="2" fill="currentColor" stroke="none" />
+              </>
+            )
+          }
+          {
+            category === 'tool' && (
+              <>
+                <rect x="20" y="26" width="80" height="68" rx="6" />
+                <path d="M34 50l8 8-8 8M50 66h18" />
+                <path d="M32 38h10" />
+              </>
+            )
+          }
+        </svg>
+      </div>
+    )
+  }
+
+  <div class:list={['relative flex h-full flex-col justify-between', padding]}>
+    <div class="relative flex items-start justify-between gap-3">
+      <span
+        class:list={['font-mono font-medium tracking-tight', indexSize, cover ? 'text-white/80' : 'text-fg/25']}
+        aria-hidden="true"
+      >
+        {index ? String(index).padStart(2, '0') : '—'}
+      </span>
+      <span class:list={['mt-0.5 flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.14em]', metaTone]}>
+        {t(`category.${category}`)}
+        <span class:list={[metaMuted]} aria-hidden="true">/</span>
+        {year}
+      </span>
+    </div>
+
+    <div class="relative flex items-end justify-between gap-3">
+      {
+        featured ? (
+          <span class="bg-surface/90 border-border text-fg relative z-10 rounded-full border px-2.5 py-0.5 text-xs font-medium backdrop-blur">
+            {t('projects.featured')}
+          </span>
+        ) : (
+          <span class:list={['font-mono text-[10px] uppercase tracking-[0.14em]', metaLabel]} aria-hidden="true">
+            {tags[0]}
+          </span>
+        )
+      }
+    </div>
+  </div>
+
+  <span
+    class="pointer-events-none absolute inset-0 -translate-x-full bg-[linear-gradient(105deg,transparent_40%,rgba(255,255,255,0.24)_50%,transparent_60%)] transition-transform duration-700 group-hover:translate-x-full"
+    aria-hidden="true"
+  ></span>
+</div>
+
+<style>
+  .cover-grid {
+    background-image:
+      linear-gradient(to right, color-mix(in srgb, var(--fg) 7%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in srgb, var(--fg) 7%, transparent) 1px, transparent 1px);
+    background-size: 24px 24px;
+    -webkit-mask-image: radial-gradient(ellipse at 50% 50%, #000 20%, transparent 90%);
+    mask-image: radial-gradient(ellipse at 50% 50%, #000 20%, transparent 90%);
+    transition: transform 700ms var(--ease-out);
+  }
+
+  .project-cover:hover .cover-grid {
+    transform: translate(4px, 4px);
+  }
+</style>

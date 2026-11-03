@@ -19,14 +19,20 @@ const items = await Promise.all(entries.map(async (entry) => ({ entry, Content: 
 
 <section id="experience" class="border-border border-t">
   <div class="mx-auto max-w-5xl px-5 py-24">
-    <SectionTitle eyebrow="03" title={t('experience.title')} />
+    <div data-reveal>
+      <SectionTitle eyebrow="03" title={t('experience.title')} />
+    </div>
 
     <ol class="divide-border border-border divide-y border-y">
       {
-        items.map(({ entry, Content }) => {
+        items.map(({ entry, Content }, index) => {
           const { role, company, location, url, start, end, type } = entry.data;
           return (
-            <li class="grid gap-3 py-8 md:grid-cols-[12rem_1fr] md:gap-10">
+            <li
+              class="grid gap-3 py-8 md:grid-cols-[12rem_1fr] md:gap-10"
+              data-reveal
+              style={`--reveal-delay: ${index * 60}ms`}
+            >
               <div class="text-muted space-y-2 text-sm">
                 <p class="font-mono text-xs">
                   {formatMonth(start, lang)} — {end ? formatMonth(end, lang) : t('experience.present')}

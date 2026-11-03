@@ -2,6 +2,7 @@
 // Apache sirve esta página para cualquier ruta inexistente (ver public/.htaccess),
 // así que no sabemos el idioma en build: mostramos ambos.
 import '@/styles/global.css';
+import Logo from '@/components/Logo.astro';
 import { site } from '@/data/site';
 import { ui } from '@/i18n/ui';
 import { localePath } from '@/i18n/utils';
@@ -24,7 +25,11 @@ import { localePath } from '@/i18n/utils';
     </script>
   </head>
   <body class="grid min-h-dvh place-items-center p-5">
-    <main class="w-full max-w-md text-center">
+    <div class="grain" aria-hidden="true"></div>
+    <main class="relative w-full max-w-md text-center">
+      <span class="bg-fg text-bg mx-auto mb-6 grid size-10 place-items-center rounded-lg" aria-hidden="true">
+        <Logo class="size-5" />
+      </span>
       <p class="eyebrow">Error 404</p>
       <h1 class="mt-4 text-3xl sm:text-4xl">{ui.es['404.title']}</h1>
       <p class="text-muted mt-3">{ui.es['404.body']}</p>

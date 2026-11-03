@@ -1,0 +1,249 @@
+---
+import { site, stack } from '@/data/site';
+import { useTranslations } from '@/i18n/utils';
+import type { Lang } from '@/i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const layers = [
+  { label: t('hero.stack.interface'), items: stack.interface },
+  { label: t('hero.stack.logic'), items: stack.logic },
+  { label: t('hero.stack.data'), items: stack.data },
+];
+
+const firstName = site.name.split(' ')[0]?.toLowerCase() ?? 'dev';
+---
+
+<div class="card stack-card relative overflow-hidden p-6" data-stack-card>
+  <div class="stack-glow" aria-hidden="true"></div>
+
+  <div class="relative flex items-center justify-between gap-3">
+    <p class="text-faint font-mono text-xs tracking-tight">{firstName}.stack</p>
+    <p class="text-muted flex items-center gap-2 font-mono text-[11px] uppercase tracking-wider">
+      <span class="relative flex size-1.5" aria-hidden="true">
+        <span class="absolute inset-0 rounded-full bg-emerald-500/40"></span>
+        <span class="relative size-1.5 rounded-full bg-emerald-500"></span>
+      </span>
+      {t('hero.stack.online')}
+    </p>
+  </div>
+
+  <ol class="relative mt-7 space-y-6" aria-label={t('hero.stack.title')}>
+    <span class="stack-line" aria-hidden="true"></span>
+    {
+      layers.map(({ label, items }, index) => (
+        <li class="stack-layer relative pl-6" style={`--layer-index: ${index}`}>
+          <span class="stack-dot" aria-hidden="true" />
+          <p class="text-faint font-mono text-[11px] uppercase tracking-[0.16em]">{label}</p>
+          <ul class="mt-2 flex flex-wrap gap-1.5">
+            {items.map((item) => (
+              <li class="tag px-2 py-0.5 text-xs">{item}</li>
+            ))}
+          </ul>
+        </li>
+      ))
+    }
+  </ol>
+
+  <div class="border-border relative mt-6 flex items-center justify-between gap-3 border-t pt-4">
+    <p class="text-muted font-mono text-[11px]">TypeScript <span class="text-faint">end-to-end</span></p>
+    <p class="text-faint font-mono text-[11px]">build: static</p>
+  </div>
+</div>
+
+<style>
+  .stack-card {
+    --mx: 50%;
+    --my: 50%;
+  }
+
+  .stack-glow {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(
+      220px circle at var(--mx) var(--my),
+      color-mix(in srgb, var(--accent) 14%, transparent),
+      transparent 70%
+    );
+    transition: opacity 300ms ease;
+  }
+
+  .stack-card:hover .stack-glow {
+    opacity: 1;
+  }
+
+  .stack-line {
+    position: absolute;
+    top: 6px;
+    bottom: 6px;
+    left: 4px;
+    width: 1px;
+    background: var(--border);
+    transform-origin: top;
+  }
+
+  .stack-line::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 0%, var(--accent) 50%, transparent 100%);
+    background-size: 100% 32%;
+    background-repeat: no-repeat;
+    opacity: 0.9;
+    animation: stack-pulse 5s linear infinite;
+    animation-delay: 1.4s;
+    animation-play-state: paused;
+  }
+
+  .stack-card[data-active='true'] .stack-line::after {
+    animation-play-state: running;
+  }
+
+  .stack-dot {
+    position: absolute;
+    top: 2px;
+    left: 0;
+    display: block;
+    width: 8px;
+    height: 8px;
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    background: var(--surface);
+    transition:
+      border-color 200ms ease,
+      background-color 200ms ease,
+      box-shadow 200ms ease;
+  }
+
+  .stack-layer {
+    transition: transform 200ms var(--ease-out);
+  }
+
+  .stack-layer:hover {
+    transform: translateX(2px);
+  }
+
+  .stack-layer:hover .stack-dot {
+    border-color: var(--accent);
+    background: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent);
+  }
+
+  .stack-layer:hover :global(.tag) {
+    border-color: var(--border-strong);
+    color: var(--fg);
+  }
+
+  :global(.js) .stack-card {
+    animation: stack-card-in 500ms var(--ease-out) both;
+  }
+
+  :global(.js) .stack-line {
+    animation: stack-line-in 700ms var(--ease-out) 250ms both;
+  }
+
+  :global(.js) .stack-dot {
+    animation: stack-dot-in 400ms var(--ease-out) backwards;
+    animation-delay: calc(450ms + var(--layer-index) * 120ms);
+  }
+
+  :global(.js) .stack-layer {
+    animation: stack-layer-in 550ms var(--ease-out) backwards;
+    animation-delay: calc(350ms + var(--layer-index) * 120ms);
+  }
+
+  @keyframes stack-pulse {
+    0% {
+      background-position: 0 -40%;
+    }
+    65%,
+    100% {
+      background-position: 0 140%;
+    }
+  }
+
+  @keyframes stack-card-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes stack-line-in {
+    from {
+      transform: scaleY(0);
+    }
+    to {
+      transform: scaleY(1);
+    }
+  }
+
+  @keyframes stack-dot-in {
+    from {
+      opacity: 0;
+      transform: scale(0.6);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes stack-layer-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+
+<script>
+  let frame = 0;
+
+  function initStackCard() {
+    const card = document.querySelector<HTMLElement>('[data-stack-card]');
+    if (!card) return;
+
+    if (!('IntersectionObserver' in window)) {
+      card.dataset.active = 'true';
+    } else {
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          card.dataset.active = String(entry?.isIntersecting ?? false);
+        },
+        { threshold: 0.25 },
+      );
+      observer.observe(card);
+    }
+
+    if (!matchMedia('(pointer: fine)').matches || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    card.addEventListener(
+      'pointermove',
+      (event) => {
+        const rect = card.getBoundingClientRect();
+        cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(() => {
+          card.style.setProperty('--mx', `${event.clientX - rect.left}px`);
+          card.style.setProperty('--my', `${event.clientY - rect.top}px`);
+        });
+      },
+      { passive: true },
+    );
+  }
+
+  document.addEventListener('astro:page-load', initStackCard);
+</script>

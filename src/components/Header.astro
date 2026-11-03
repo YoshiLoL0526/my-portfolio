@@ -1,6 +1,7 @@
 ---
 import ThemeToggle from './ThemeToggle.astro';
 import LanguagePicker from './LanguagePicker.astro';
+import Logo from './Logo.astro';
 import { site } from '@/data/site';
 import { localePath, useTranslations } from '@/i18n/utils';
 import type { Lang } from '@/i18n/ui';
@@ -12,33 +13,41 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const home = localePath(lang);
+const projectsPath = localePath(lang, 'projects');
+const onProjects = Astro.url.pathname.startsWith(projectsPath);
 
 const links = [
   { href: `${home}#about`, label: t('nav.about') },
-  { href: localePath(lang, 'projects'), label: t('nav.projects') },
+  { href: projectsPath, label: t('nav.projects') },
   { href: `${home}#experience`, label: t('nav.experience') },
   { href: `${home}#contact`, label: t('nav.contact') },
 ];
+
+const navLink =
+  "relative rounded-md px-3 py-2 text-sm transition-colors after:absolute after:bottom-1 after:left-3 after:right-3 after:h-px after:origin-left after:scale-x-0 after:bg-border-strong after:transition-transform after:content-[''] hover:after:scale-x-100";
 ---
 
-<header class="border-border/0 bg-bg/80 sticky top-0 z-40 border-b backdrop-blur-md transition-colors" data-header>
+<header class="bg-bg/80 sticky top-0 z-40 border-b backdrop-blur-md" data-header>
   <nav class="mx-auto flex h-16 max-w-5xl items-center justify-between gap-4 px-5" aria-label={t('nav.label')}>
     <a href={home} class="flex items-center gap-2.5 font-semibold tracking-tight">
-      <span class="bg-fg text-bg grid size-7 place-items-center rounded-md text-sm" aria-hidden="true">
-        {site.name.slice(0, 1)}
+      <span class="bg-fg text-bg grid size-7 place-items-center rounded-md" aria-hidden="true">
+        <Logo class="size-[18px]" />
       </span>
       {site.name}
     </a>
 
     <ul class="hidden items-center gap-1 md:flex">
       {
-        links.map(({ href, label }) => (
-          <li>
-            <a href={href} class="text-muted hover:text-fg rounded-md px-3 py-2 text-sm transition-colors">
-              {label}
-            </a>
-          </li>
-        ))
+        links.map(({ href, label }) => {
+          const active = href === projectsPath && onProjects;
+          return (
+            <li>
+              <a href={href} class:list={[navLink, active ? 'text-fg after:scale-x-100' : 'text-muted hover:text-fg']}>
+                {label}
+              </a>
+            </li>
+          );
+        })
       }
     </ul>
 
@@ -46,38 +55,108 @@ const links = [
       <LanguagePicker lang={lang} />
       <ThemeToggle label={t('theme.toggle')} />
       <details class="relative md:hidden">
-        <summary class="icon-btn cursor-pointer list-none" aria-label="Menu">
+        <summary class="icon-btn cursor-pointer list-none" aria-label={t('nav.menu')}>
           <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
             <path d="M4 7h16M4 12h16M4 17h16"></path>
           </svg>
         </summary>
-        <ul class="card absolute right-0 mt-2 flex w-52 flex-col p-1.5 shadow-hover">
+        <ul class="card menu-panel absolute right-0 mt-2 flex w-52 flex-col p-1.5 shadow-hover">
           {
-            links.map(({ href, label }) => (
-              <li>
-                <a href={href} class="text-muted hover:bg-subtle hover:text-fg block rounded-md px-3 py-2 text-sm">
-                  {label}
-                </a>
-              </li>
-            ))
+            links.map(({ href, label }) => {
+              const active = href === projectsPath && onProjects;
+              return (
+                <li>
+                  <a
+                    href={href}
+                    class:list={[
+                      'block rounded-md px-3 py-2 text-sm',
+                      active ? 'bg-subtle text-fg' : 'text-muted hover:bg-subtle hover:text-fg',
+                    ]}
+                  >
+                    {label}
+                  </a>
+                </li>
+              );
+            })
           }
         </ul>
       </details>
     </div>
   </nav>
+
+  <div class="pointer-events-none absolute inset-x-0 -bottom-px h-px overflow-hidden" aria-hidden="true">
+    <span class="bg-accent block h-full origin-left scale-x-0" data-header-progress></span>
+  </div>
 </header>
 
-<script>
-  // Cierra el menú móvil al elegir un enlace.
-  document.querySelectorAll('header details a').forEach((link) => {
-    link.addEventListener('click', () => link.closest('details')?.removeAttribute('open'));
-  });
-
-  // El borde inferior solo aparece al hacer scroll.
-  const header = document.querySelector<HTMLElement>('[data-header]');
-  if (header) {
-    const update = () => header.classList.toggle('border-border/100', scrollY > 8);
-    update();
-    addEventListener('scroll', update, { passive: true });
+<style>
+  [data-header] {
+    border-bottom-color: transparent;
+    transition:
+      border-color 200ms ease,
+      background-color 200ms ease;
   }
+
+  [data-header][data-scrolled] {
+    border-bottom-color: var(--border);
+  }
+
+  .menu-panel {
+    transform-origin: top right;
+  }
+
+  details[open] .menu-panel {
+    animation: menu-in 180ms var(--ease-out);
+  }
+
+  @keyframes menu-in {
+    from {
+      opacity: 0;
+      transform: translateY(-4px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  let headerAbort: AbortController | undefined;
+  let frame = 0;
+
+  function initHeader() {
+    const header = document.querySelector<HTMLElement>('[data-header]');
+    if (!header) return;
+
+    // Cierra el menú móvil al elegir un enlace.
+    header.querySelectorAll('details a').forEach((link) => {
+      link.addEventListener('click', () => link.closest('details')?.removeAttribute('open'));
+    });
+
+    headerAbort?.abort();
+    headerAbort = new AbortController();
+
+    const progress = header.querySelector<HTMLElement>('[data-header-progress]');
+
+    const update = () => {
+      const y = window.scrollY;
+      header.toggleAttribute('data-scrolled', y > 8);
+      if (progress) {
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        progress.style.transform = `scaleX(${max > 0 ? Math.min(y / max, 1) : 0})`;
+      }
+    };
+
+    const onScroll = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(update);
+    };
+
+    update();
+    addEventListener('scroll', onScroll, { passive: true, signal: headerAbort.signal });
+    addEventListener('resize', onScroll, { passive: true, signal: headerAbort.signal });
+  }
+
+  document.addEventListener('astro:page-load', initHeader);
 </script>

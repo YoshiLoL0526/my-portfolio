@@ -1,4 +1,5 @@
 ---
+import StackCard from './StackCard.astro';
 import { site } from '@/data/site';
 import { useTranslations } from '@/i18n/utils';
 import type { Lang } from '@/i18n/ui';
@@ -12,9 +13,16 @@ const t = useTranslations(lang);
 const [lead, rest] = t('hero.title').split('|');
 ---
 
-<section class="mx-auto grid max-w-5xl items-center gap-14 px-5 pt-20 pb-24 lg:grid-cols-[1.5fr_1fr] lg:pt-28">
-  <div>
-    <p class="border-border bg-surface text-muted inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium">
+<section
+  class="relative isolate mx-auto grid max-w-5xl items-center gap-14 overflow-hidden px-5 pt-20 pb-24 lg:grid-cols-[1.5fr_1fr] lg:pt-28"
+>
+  <div class="hero-bg -z-10" aria-hidden="true"></div>
+
+  <div class="relative">
+    <p
+      class="border-border bg-surface text-muted inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium"
+      data-hero="badge"
+    >
       <span class="relative flex size-2">
         <span class="absolute inset-0 rounded-full bg-emerald-500 opacity-60 motion-safe:animate-ping"></span>
         <span class="relative size-2 rounded-full bg-emerald-500"></span>
@@ -23,51 +31,24 @@ const [lead, rest] = t('hero.title').split('|');
     </p>
 
     <h1 class="mt-7 text-4xl sm:text-5xl lg:text-6xl">
-      {lead}
-      <span class="text-faint block">{rest}</span>
+      <span class="block">
+        <span class="block" data-hero="line" style="--hero-delay: 90ms">{lead}</span>
+      </span>
+      <span class="text-faint block" data-hero="line" style="--hero-delay: 180ms">{rest}</span>
     </h1>
 
-    <p class="text-muted mt-6 max-w-xl text-lg leading-relaxed">{t('hero.subtitle')}</p>
+    <p class="text-muted mt-6 max-w-xl text-lg leading-relaxed" data-hero="fade" style="--hero-delay: 300ms">
+      {t('hero.subtitle')}
+    </p>
 
-    <div class="mt-9 flex flex-wrap gap-3">
+    <div class="mt-9 flex flex-wrap gap-3" data-hero="fade" style="--hero-delay: 380ms">
       <a href="#projects" class="btn btn-primary">{t('hero.cta.projects')} <span aria-hidden="true">→</span></a>
       <a href="#contact" class="btn btn-secondary">{t('hero.cta.contact')}</a>
       <a href={site.cv} class="btn btn-ghost" download>{t('hero.cta.cv')} <span aria-hidden="true">↓</span></a>
     </div>
   </div>
 
-  <!-- Tarjeta de perfil: sustituye el bloque de iniciales por tu foto con <Image />. -->
-  <div class="card mx-auto w-full max-w-sm p-6">
-    <div class="flex items-center gap-4">
-      <div class="bg-subtle border-border grid size-14 place-items-center rounded-full border text-xl font-semibold">
-        {site.name.slice(0, 1)}
-      </div>
-      <div>
-        <p class="font-semibold">{site.name}</p>
-        <p class="text-muted text-sm">{site.role}</p>
-      </div>
-    </div>
-    <dl class="border-border mt-6 grid gap-3 border-t pt-5 text-sm">
-      <div class="flex justify-between gap-4">
-        <dt class="text-muted">{t('hero.location')}</dt>
-        <dd>{site.location}</dd>
-      </div>
-      <div class="flex justify-between gap-4">
-        <dt class="text-muted">Email</dt>
-        <dd><a href={`mailto:${site.email}`} class="link">{site.email}</a></dd>
-      </div>
-      <div class="flex justify-between gap-4">
-        <dt class="text-muted">{t('hero.links')}</dt>
-        <dd class="flex gap-3">
-          {
-            site.socials.map(({ label, href }) => (
-              <a href={href} target="_blank" rel="noopener noreferrer" class="link">
-                {label}
-              </a>
-            ))
-          }
-        </dd>
-      </div>
-    </dl>
+  <div class="relative mx-auto w-full max-w-sm">
+    <StackCard lang={lang} />
   </div>
 </section>

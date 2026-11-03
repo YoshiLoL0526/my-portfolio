@@ -1,7 +1,8 @@
 ---
-import { Image } from 'astro:assets';
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import ProjectCover from '@/components/ProjectCover.astro';
+import { getProjects } from '@/lib/projects';
 import { formatMonth, localePath, splitEntryId, useTranslations } from '@/i18n/utils';
 
 export async function getStaticPaths() {
@@ -19,15 +20,11 @@ interface Props {
 const { project } = Astro.props;
 const { lang } = splitEntryId(project.id);
 const t = useTranslations(lang);
-const { title, description, tags, cover, repo, demo, date, color } = project.data;
+const { title, description, tags, repo, demo, date } = project.data;
 const { Content } = await render(project);
-const tint = {
-  pink: 'bg-tint-pink',
-  blue: 'bg-tint-blue',
-  green: 'bg-tint-green',
-  yellow: 'bg-tint-yellow',
-  purple: 'bg-tint-purple',
-}[color];
+// Mismo número que la tarjeta del listado, para que la portada mantenga continuidad.
+const ordered = await getProjects(lang);
+const index = ordered.findIndex((entry) => entry.id === project.id) + 1;
 ---
 
 <BaseLayout lang={lang} title={title} description={description}>
@@ -53,20 +50,18 @@ const tint = {
       }
     </header>
 
-    <div class:list={['border-border mt-12 aspect-video overflow-hidden rounded-xl border', tint]}>
-      {
-        cover ? (
-          <Image src={cover} alt="" class="size-full object-cover" widths={[800, 1600]} sizes="(min-width: 768px) 768px, 100vw" />
-        ) : (
-          <span class="text-fg/70 grid size-full place-items-center p-6 text-center text-3xl font-semibold tracking-tight sm:text-4xl">
-            {title}
-          </span>
-        )
-      }
+    <div class="border-border mt-12 aspect-video overflow-hidden rounded-xl border">
+      <ProjectCover project={project} lang={lang} index={index} variant="detail" class="h-full" />
     </div>
 
     <div class="prose-content text-muted mt-12 text-[1.05rem]">
       <Content />
+    </div>
+
+    <div class="border-border mt-16 border-t pt-6">
+      <a href={localePath(lang, 'projects')} class="text-muted hover:text-fg inline-flex items-center gap-1.5 text-sm transition-colors">
+        <span aria-hidden="true">←</span> {t('projects.back')}
+      </a>
     </div>
   </article>
 </BaseLayout>
