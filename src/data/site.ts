@@ -14,6 +14,10 @@ export const site = {
   web3formsKey: 'YOUR_WEB3FORMS_ACCESS_KEY', // TODO
 } as const;
 
+// Tipos de proyecto para filtrar; sus nombres visibles están en i18n/ui.ts (category.*).
+export const projectCategories = ['web', 'api', 'mobile', 'tool'] as const;
+export type ProjectCategory = (typeof projectCategories)[number];
+
 export const skills = {
   frontend: ['TypeScript', 'React', 'Astro', 'Tailwind CSS', 'HTML y CSS'],
   backend: ['Node.js', 'Express', 'PostgreSQL', 'REST', 'Prisma'],

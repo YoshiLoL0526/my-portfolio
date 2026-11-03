@@ -4,6 +4,7 @@ description: Rate-limited REST API with caching that aggregates data from severa
 tags: [Node.js, Express, Redis, Docker]
 repo: https://github.com/
 date: 2026-02-15
+category: api
 color: blue
 ---
 

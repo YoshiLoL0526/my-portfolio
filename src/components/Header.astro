@@ -15,7 +15,7 @@ const home = localePath(lang);
 
 const links = [
   { href: `${home}#about`, label: t('nav.about') },
-  { href: `${home}#projects`, label: t('nav.projects') },
+  { href: localePath(lang, 'projects'), label: t('nav.projects') },
   { href: `${home}#experience`, label: t('nav.experience') },
   { href: `${home}#contact`, label: t('nav.contact') },
 ];

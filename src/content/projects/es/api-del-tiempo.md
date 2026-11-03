@@ -4,6 +4,7 @@ description: API REST con caché y límites de uso que agrega datos de varios pr
 tags: [Node.js, Express, Redis, Docker]
 repo: https://github.com/
 date: 2026-02-15
+category: api
 color: blue
 ---
 

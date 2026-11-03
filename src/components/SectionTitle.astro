@@ -3,9 +3,11 @@ interface Props {
   title: string;
   subtitle?: string;
   color?: 'pink' | 'blue' | 'green' | 'yellow' | 'purple';
+  /** h1 en páginas propias, h2 en secciones de la home. */
+  as?: 'h1' | 'h2';
 }
 
-const { title, subtitle, color = 'yellow' } = Astro.props;
+const { title, subtitle, color = 'yellow', as: Heading = 'h2' } = Astro.props;
 const bg = {
   pink: 'bg-pink',
   blue: 'bg-blue',
@@ -16,6 +18,6 @@ const bg = {
 ---
 
 <div class="mb-10">
-  <h2 class:list={['brutal on-accent inline-block -rotate-1 px-4 py-2 text-3xl sm:text-5xl', bg]}>{title}</h2>
+  <Heading class:list={['brutal on-accent inline-block -rotate-1 px-4 py-2 text-3xl sm:text-5xl', bg]}>{title}</Heading>
   {subtitle && <p class="text-muted mt-5 max-w-2xl text-lg">{subtitle}</p>}
 </div>

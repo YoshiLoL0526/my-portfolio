@@ -1,6 +1,7 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
+import { projectCategories } from './data/site';
 
 // Cada entrada vive en una carpeta por idioma: projects/es/mi-proyecto.md → id "es/mi-proyecto".
 const projects = defineCollection({
@@ -10,6 +11,7 @@ const projects = defineCollection({
       title: z.string(),
       description: z.string(),
       tags: z.array(z.string()),
+      category: z.enum(projectCategories).default('web'),
       cover: image().optional(),
       repo: z.url().optional(),
       demo: z.url().optional(),
