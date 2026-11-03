@@ -1,0 +1,26 @@
+---
+import { langs, switchLangPath, useTranslations } from '@/i18n/utils';
+import type { Lang } from '@/i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const others = langs.filter((l) => l !== lang);
+---
+
+{
+  others.map((l) => (
+    <a
+      href={switchLangPath(Astro.url.pathname, l)}
+      hreflang={l}
+      lang={l}
+      aria-label={t('lang.switch')}
+      class="brutal-sm press bg-blue on-accent grid h-11 place-items-center px-3 font-mono font-bold uppercase"
+    >
+      {l}
+    </a>
+  ))
+}

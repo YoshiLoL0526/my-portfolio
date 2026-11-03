@@ -1,0 +1,73 @@
+---
+import ThemeToggle from './ThemeToggle.astro';
+import LanguagePicker from './LanguagePicker.astro';
+import { site } from '@/data/site';
+import { localePath, useTranslations } from '@/i18n/utils';
+import type { Lang } from '@/i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const home = localePath(lang);
+
+const links = [
+  { href: `${home}#about`, label: t('nav.about') },
+  { href: `${home}#projects`, label: t('nav.projects') },
+  { href: `${home}#experience`, label: t('nav.experience') },
+  { href: `${home}#contact`, label: t('nav.contact') },
+];
+---
+
+<header class="sticky top-0 z-40 px-4 pt-4">
+  <nav
+    class="brutal bg-surface mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3"
+    aria-label={t('nav.label')}
+  >
+    <a href={home} class="font-display text-xl uppercase">
+      {site.name}<span class="text-pink">.</span>
+    </a>
+
+    <ul class="hidden items-center gap-1 md:flex">
+      {
+        links.map(({ href, label }) => (
+          <li>
+            <a href={href} class="hover:bg-yellow hover:text-on-accent px-3 py-2 font-bold uppercase">
+              {label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="flex items-center gap-2">
+      <LanguagePicker lang={lang} />
+      <ThemeToggle label={t('theme.toggle')} />
+      <details class="relative md:hidden">
+        <summary class="brutal-sm bg-yellow on-accent cursor-pointer list-none px-3 py-2 font-bold uppercase">
+          Menu
+        </summary>
+        <ul class="brutal bg-surface absolute right-0 mt-3 flex w-48 flex-col p-2">
+          {
+            links.map(({ href, label }) => (
+              <li>
+                <a href={href} class="hover:bg-yellow hover:text-on-accent block px-3 py-2 font-bold uppercase">
+                  {label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </details>
+    </div>
+  </nav>
+</header>
+
+<script>
+  // Cierra el menú móvil al elegir un enlace.
+  document.querySelectorAll('header details a').forEach((link) => {
+    link.addEventListener('click', () => link.closest('details')?.removeAttribute('open'));
+  });
+</script>

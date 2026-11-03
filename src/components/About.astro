@@ -1,0 +1,62 @@
+---
+import SectionTitle from './SectionTitle.astro';
+import { site, skills } from '@/data/site';
+import { useTranslations } from '@/i18n/utils';
+import type { Lang } from '@/i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const stats = [
+  { value: site.stats.years, label: t('about.stats.years'), bg: 'bg-pink' },
+  { value: site.stats.projects, label: t('about.stats.projects'), bg: 'bg-blue' },
+  { value: site.stats.coffee, label: t('about.stats.coffee'), bg: 'bg-green' },
+];
+
+const groups = [
+  { title: t('skills.frontend'), items: skills.frontend, bg: 'bg-yellow' },
+  { title: t('skills.backend'), items: skills.backend, bg: 'bg-pink' },
+  { title: t('skills.tools'), items: skills.tools, bg: 'bg-blue' },
+];
+---
+
+<section id="about" class="mx-auto max-w-6xl px-4 py-20">
+  <SectionTitle title={t('about.title')} color="pink" />
+
+  <div class="grid gap-8 lg:grid-cols-[1.3fr_1fr]">
+    <div class="brutal bg-surface space-y-4 p-6 text-lg sm:p-8">
+      {t('about.body').split('|').map((paragraph) => <p>{paragraph}</p>)}
+    </div>
+
+    <ul class="grid grid-cols-3 gap-4 lg:grid-cols-1">
+      {
+        stats.map(({ value, label, bg }) => (
+          <li class:list={['brutal on-accent flex flex-col justify-center p-4 lg:flex-row lg:items-center lg:gap-4', bg]}>
+            <span class="font-display text-4xl sm:text-5xl">{value}</span>
+            <span class="text-sm font-bold uppercase sm:text-base">{label}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+
+  <h3 class="mt-16 mb-6 text-2xl sm:text-3xl">{t('skills.title')}</h3>
+  <div class="grid gap-6 md:grid-cols-3">
+    {
+      groups.map(({ title, items, bg }) => (
+        <div class="brutal bg-surface p-5">
+          <p class:list={['brutal-sm on-accent mb-4 inline-block px-3 py-1 font-mono font-bold uppercase', bg]}>{title}</p>
+          <ul class="flex flex-wrap gap-2">
+            {items.map((item) => (
+              <li class="border-ink border-2 px-3 py-1 font-bold">{item}</li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+  </div>
+</section>

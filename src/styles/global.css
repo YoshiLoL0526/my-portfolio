@@ -1,0 +1,214 @@
+@import 'tailwindcss';
+@import '@fontsource/archivo-black/400.css';
+@import '@fontsource-variable/space-grotesk';
+@import '@fontsource/space-mono/400.css';
+
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+/* ---------- Tokens ---------- */
+:root {
+  --paper: #fff6d6;
+  --surface: #ffffff;
+  --ink: #111111;
+  --muted: #4a4636;
+  /* Los acentos son los mismos en ambos temas; el texto sobre ellos siempre es tinta oscura. */
+  --pink: #ff6b9d;
+  --blue: #7cd1ff;
+  --green: #b8f28b;
+  --yellow: #ffd23f;
+  --purple: #c4a1ff;
+  --on-accent: #111111;
+  --shadow: 5px 5px 0 var(--ink);
+  --shadow-sm: 3px 3px 0 var(--ink);
+  --shadow-lg: 8px 8px 0 var(--ink);
+  color-scheme: light;
+}
+
+[data-theme='dark'] {
+  --paper: #16140f;
+  --surface: #242019;
+  --ink: #fff6d6;
+  --muted: #c9c1a6;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --font-display: 'Archivo Black', 'Arial Black', sans-serif;
+  --font-sans: 'Space Grotesk Variable', system-ui, sans-serif;
+  --font-mono: 'Space Mono', ui-monospace, monospace;
+
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-pink: var(--pink);
+  --color-blue: var(--blue);
+  --color-green: var(--green);
+  --color-yellow: var(--yellow);
+  --color-purple: var(--purple);
+  --color-on-accent: var(--on-accent);
+
+  --shadow-brutal-sm: var(--shadow-sm);
+  --shadow-brutal: var(--shadow);
+  --shadow-brutal-lg: var(--shadow-lg);
+}
+
+/* ---------- Base ---------- */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
+  }
+
+  body {
+    background-color: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    /* Cuadrícula sutil de fondo, típica del neo-brutalismo. */
+    background-image:
+      linear-gradient(color-mix(in srgb, var(--ink) 6%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in srgb, var(--ink) 6%, transparent) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    line-height: 1.05;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+  }
+
+  ::selection {
+    background: var(--pink);
+    color: var(--on-accent);
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--ink);
+    outline-offset: 3px;
+  }
+}
+
+/* ---------- Utilidades del sistema ---------- */
+@utility brutal {
+  border: 3px solid var(--ink);
+  box-shadow: var(--shadow);
+}
+
+@utility brutal-sm {
+  border: 2px solid var(--ink);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Elemento que "se hunde" al pulsarlo: se desplaza hacia su sombra. */
+@utility press {
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease;
+
+  &:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  &:active {
+    transform: translate(4px, 4px);
+    box-shadow: 0 0 0 var(--ink);
+  }
+}
+
+@utility on-accent {
+  color: var(--on-accent);
+}
+
+/* Los colores de acento con texto oscuro se ven bien en ambos temas. */
+@layer components {
+  .btn {
+    @apply brutal-sm press on-accent inline-flex items-center gap-2 px-5 py-3 font-bold uppercase tracking-wide;
+  }
+}
+
+/* Estilos para el HTML que genera Markdown (detalle de proyecto y experiencia). */
+@layer components {
+  .prose-brutal {
+    & > * + * {
+      margin-top: 1em;
+    }
+
+    & h2,
+    & h3 {
+      margin-top: 1.6em;
+      font-size: 1.5rem;
+    }
+
+    & ul {
+      list-style: square;
+      padding-left: 1.25em;
+    }
+
+    & ol {
+      list-style: decimal;
+      padding-left: 1.25em;
+    }
+
+    & li + li {
+      margin-top: 0.35em;
+    }
+
+    & a {
+      font-weight: 700;
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 4px;
+    }
+
+    & code {
+      font-family: var(--font-mono);
+      font-size: 0.9em;
+      background: var(--yellow);
+      color: var(--on-accent);
+      padding: 0.1em 0.35em;
+    }
+
+    & pre {
+      border: 3px solid var(--ink);
+      background: #111;
+      color: #fff6d6;
+      padding: 1rem;
+      overflow-x: auto;
+
+      & code {
+        background: none;
+        color: inherit;
+        padding: 0;
+      }
+    }
+
+    & img {
+      border: 3px solid var(--ink);
+      box-shadow: var(--shadow);
+    }
+
+    & blockquote {
+      border-left: 6px solid var(--pink);
+      padding-left: 1rem;
+      font-style: italic;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

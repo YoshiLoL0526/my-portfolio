@@ -1,0 +1,60 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { formatMonth, localePath, splitEntryId, useTranslations } from '@/i18n/utils';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map((project) => {
+    const { lang, slug } = splitEntryId(project.id);
+    return { params: { lang, slug }, props: { project } };
+  });
+}
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+}
+
+const { project } = Astro.props;
+const { lang } = splitEntryId(project.id);
+const t = useTranslations(lang);
+const { title, description, tags, cover, repo, demo, date, color } = project.data;
+const { Content } = await render(project);
+const bg = { pink: 'bg-pink', blue: 'bg-blue', green: 'bg-green', yellow: 'bg-yellow', purple: 'bg-purple' }[color];
+---
+
+<BaseLayout lang={lang} title={title} description={description}>
+  <article class="mx-auto max-w-4xl px-4 pt-12 pb-10">
+    <a href={`${localePath(lang)}#projects`} class="btn bg-surface text-ink px-4 py-2 text-sm">← {t('projects.back')}</a>
+
+    <header class="mt-10">
+      <p class="font-mono text-sm font-bold">{formatMonth(date, lang)}</p>
+      <h1 class="mt-3 text-4xl sm:text-6xl">{title}</h1>
+      <p class="text-muted mt-5 text-xl">{description}</p>
+      <ul class="mt-6 flex flex-wrap gap-2 font-mono text-sm">
+        {tags.map((tag) => <li class="border-ink border-2 px-2 py-0.5 font-bold">{tag}</li>)}
+      </ul>
+      <div class="mt-8 flex flex-wrap gap-4">
+        {demo && <a href={demo} target="_blank" rel="noopener noreferrer" class="btn bg-green">{t('projects.demo')} ↗</a>}
+        {repo && <a href={repo} target="_blank" rel="noopener noreferrer" class="btn bg-blue">{t('projects.repo')} ↗</a>}
+      </div>
+    </header>
+
+    <div class:list={['brutal mt-12 aspect-video overflow-hidden', bg]}>
+      {
+        cover ? (
+          <Image src={cover} alt="" class="size-full object-cover" widths={[800, 1600]} sizes="(min-width: 896px) 896px, 100vw" />
+        ) : (
+          <span class="font-display on-accent grid size-full place-items-center p-6 text-center text-4xl uppercase sm:text-6xl">
+            {title}
+          </span>
+        )
+      }
+    </div>
+
+    <div class="brutal bg-surface prose-brutal mt-12 p-6 text-lg sm:p-10">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>

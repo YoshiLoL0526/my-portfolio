@@ -1,0 +1,29 @@
+---
+// La raíz solo redirige al idioma del navegador. Sin JS, el meta refresh lleva al idioma por defecto.
+import '@/styles/global.css';
+import { defaultLang } from '@/i18n/ui';
+import { langs, localePath } from '@/i18n/utils';
+
+const fallback = localePath(defaultLang);
+---
+
+<!doctype html>
+<html lang={defaultLang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Redirecting…</title>
+    <meta name="robots" content="noindex" />
+    <link rel="canonical" href={new URL(fallback, Astro.site)} />
+    <script is:inline define:vars={{ langs, fallback }}>
+      const preferred = navigator.languages
+        .map((l) => l.slice(0, 2).toLowerCase())
+        .find((l) => langs.includes(l));
+      location.replace(preferred ? `/${preferred}/` : fallback);
+    </script>
+    <noscript><meta http-equiv="refresh" content={`0; url=${fallback}`} /></noscript>
+  </head>
+  <body>
+    <p class="p-8 font-bold"><a href={fallback} class="underline">Continuar / Continue →</a></p>
+  </body>
+</html>

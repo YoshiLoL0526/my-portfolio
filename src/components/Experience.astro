@@ -1,0 +1,71 @@
+---
+import { getCollection, render } from 'astro:content';
+import SectionTitle from './SectionTitle.astro';
+import { formatMonth, useTranslations } from '@/i18n/utils';
+import type { Lang } from '@/i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const entries = (await getCollection('experience', ({ id }) => id.startsWith(`${lang}/`))).sort(
+  (a, b) => b.data.start.valueOf() - a.data.start.valueOf(),
+);
+const items = await Promise.all(entries.map(async (entry) => ({ entry, Content: (await render(entry)).Content })));
+---
+
+<section id="experience" class="mx-auto max-w-6xl px-4 py-20">
+  <SectionTitle title={t('experience.title')} color="green" />
+
+  <ol class="border-ink relative ml-3 space-y-10 border-l-3 pl-8 sm:ml-4 sm:pl-10">
+    {
+      items.map(({ entry, Content }) => {
+        const { role, company, location, url, start, end, type } = entry.data;
+        const isWork = type === 'work';
+        return (
+          <li class="relative">
+            <span
+              class:list={[
+                'border-ink absolute top-6 -left-[calc(2rem+11px)] size-5 border-3 sm:-left-[calc(2.5rem+11px)]',
+                isWork ? 'bg-pink' : 'bg-blue',
+              ]}
+              aria-hidden="true"
+            />
+            <article class="brutal bg-surface p-5 sm:p-6">
+              <div class="flex flex-wrap items-center justify-between gap-3">
+                <p class="font-mono text-sm font-bold">
+                  {formatMonth(start, lang)} — {end ? formatMonth(end, lang) : t('experience.present')}
+                </p>
+                <span
+                  class:list={[
+                    'brutal-sm on-accent px-2 py-0.5 font-mono text-xs font-bold uppercase',
+                    isWork ? 'bg-pink' : 'bg-blue',
+                  ]}
+                >
+                  {isWork ? t('experience.work') : t('experience.education')}
+                </span>
+              </div>
+              <h3 class="mt-3 text-xl sm:text-2xl">{role}</h3>
+              <p class="mt-1 font-bold">
+                {url ? (
+                  <a href={url} target="_blank" rel="noopener noreferrer" class="underline decoration-2 underline-offset-4 hover:text-pink">
+                    {company}
+                  </a>
+                ) : (
+                  company
+                )}
+                {location && <span class="text-muted font-normal"> · {location}</span>}
+              </p>
+              <div class="prose-brutal text-muted mt-3">
+                <Content />
+              </div>
+            </article>
+          </li>
+        );
+      })
+    }
+  </ol>
+</section>

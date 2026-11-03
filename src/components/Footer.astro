@@ -1,0 +1,30 @@
+---
+import { site } from '@/data/site';
+import { useTranslations } from '@/i18n/utils';
+import type { Lang } from '@/i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const year = new Date().getFullYear();
+---
+
+<footer class="border-ink mt-24 border-t-3 px-4 py-8">
+  <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 font-mono text-sm sm:flex-row">
+    <p>© {year} {site.name}. {t('footer.made')}</p>
+    <ul class="flex gap-4">
+      {
+        site.socials.map(({ label, href }) => (
+          <li>
+            <a href={href} target="_blank" rel="noopener noreferrer" class="font-bold underline decoration-2 underline-offset-4 hover:text-pink">
+              {label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</footer>

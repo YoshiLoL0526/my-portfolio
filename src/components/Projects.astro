@@ -1,0 +1,25 @@
+---
+import { getCollection } from 'astro:content';
+import SectionTitle from './SectionTitle.astro';
+import ProjectCard from './ProjectCard.astro';
+import { useTranslations } from '@/i18n/utils';
+import type { Lang } from '@/i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const projects = (await getCollection('projects', ({ id }) => id.startsWith(`${lang}/`))).sort(
+  (a, b) => Number(b.data.featured) - Number(a.data.featured) || b.data.date.valueOf() - a.data.date.valueOf(),
+);
+---
+
+<section id="projects" class="mx-auto max-w-6xl px-4 py-20">
+  <SectionTitle title={t('projects.title')} subtitle={t('projects.subtitle')} color="blue" />
+  <div class="grid gap-8 md:grid-cols-2">
+    {projects.map((project) => <ProjectCard project={project} lang={lang} />)}
+  </div>
+</section>

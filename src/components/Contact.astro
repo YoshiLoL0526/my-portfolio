@@ -1,0 +1,110 @@
+---
+import SectionTitle from './SectionTitle.astro';
+import { site } from '@/data/site';
+import { useTranslations } from '@/i18n/utils';
+import type { Lang } from '@/i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const field = 'brutal-sm bg-paper w-full px-4 py-3 font-medium outline-none focus:bg-surface focus:shadow-brutal';
+---
+
+<section id="contact" class="mx-auto max-w-6xl px-4 py-20">
+  <SectionTitle title={t('contact.title')} subtitle={t('contact.subtitle')} color="purple" />
+
+  <div class="grid gap-8 lg:grid-cols-[1.5fr_1fr]">
+    <form
+      action="https://api.web3forms.com/submit"
+      method="POST"
+      class="brutal bg-surface space-y-5 p-6 sm:p-8"
+      data-contact-form
+      data-sending={t('contact.sending')}
+      data-success={t('contact.success')}
+      data-error={t('contact.error')}
+    >
+      <input type="hidden" name="access_key" value={site.web3formsKey} />
+      <input type="hidden" name="subject" value={`Portfolio: nuevo mensaje (${lang})`} />
+      <input type="hidden" name="from_name" value={`${site.name} — Portfolio`} />
+      <!-- Honeypot anti-spam de Web3Forms: los humanos no lo ven. -->
+      <input type="checkbox" name="botcheck" class="hidden" tabindex="-1" autocomplete="off" />
+
+      <div class="grid gap-5 sm:grid-cols-2">
+        <label class="block">
+          <span class="mb-2 block font-bold uppercase">{t('contact.name')}</span>
+          <input type="text" name="name" required autocomplete="name" class={field} />
+        </label>
+        <label class="block">
+          <span class="mb-2 block font-bold uppercase">{t('contact.email')}</span>
+          <input type="email" name="email" required autocomplete="email" class={field} />
+        </label>
+      </div>
+      <label class="block">
+        <span class="mb-2 block font-bold uppercase">{t('contact.message')}</span>
+        <textarea name="message" required rows="6" class={field}></textarea>
+      </label>
+
+      <div class="flex flex-wrap items-center gap-4">
+        <button type="submit" class="btn bg-pink disabled:opacity-60">{t('contact.send')} →</button>
+        <p role="status" aria-live="polite" class="font-bold" data-form-status></p>
+      </div>
+    </form>
+
+    <aside class="brutal bg-yellow on-accent flex flex-col justify-between gap-6 p-6 sm:p-8">
+      <p class="font-display text-3xl uppercase sm:text-4xl">{t('contact.coffee')}</p>
+      <div>
+        <p class="font-bold">{t('contact.or')}</p>
+        <a href={`mailto:${site.email}`} class="mt-1 block font-mono text-lg font-bold break-all underline decoration-2 underline-offset-4">
+          {site.email}
+        </a>
+      </div>
+      <ul class="flex flex-wrap gap-3">
+        {
+          site.socials.map(({ label, href }) => (
+            <li>
+              <a href={href} target="_blank" rel="noopener noreferrer" class="btn bg-surface text-ink px-4 py-2 text-sm">
+                {label} ↗
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </aside>
+  </div>
+</section>
+
+<script>
+  // Envío con fetch para no salir de la página. Sin JS, el formulario se envía de forma normal.
+  document.querySelectorAll<HTMLFormElement>('[data-contact-form]').forEach((form) => {
+    const status = form.querySelector<HTMLElement>('[data-form-status]')!;
+    const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+    const { sending, success, error } = form.dataset;
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      button.disabled = true;
+      status.textContent = sending ?? '';
+      status.classList.remove('text-pink');
+
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          headers: { Accept: 'application/json' },
+          body: new FormData(form),
+        });
+        const result = (await response.json()) as { success?: boolean };
+        if (!response.ok || !result.success) throw new Error('Web3Forms rejected the submission');
+        status.textContent = success ?? '';
+        form.reset();
+      } catch {
+        status.textContent = error ?? '';
+        status.classList.add('text-pink');
+      } finally {
+        button.disabled = false;
+      }
+    });
+  });
+</script>

@@ -1,0 +1,21 @@
+---
+interface Props {
+  title: string;
+  subtitle?: string;
+  color?: 'pink' | 'blue' | 'green' | 'yellow' | 'purple';
+}
+
+const { title, subtitle, color = 'yellow' } = Astro.props;
+const bg = {
+  pink: 'bg-pink',
+  blue: 'bg-blue',
+  green: 'bg-green',
+  yellow: 'bg-yellow',
+  purple: 'bg-purple',
+}[color];
+---
+
+<div class="mb-10">
+  <h2 class:list={['brutal on-accent inline-block -rotate-1 px-4 py-2 text-3xl sm:text-5xl', bg]}>{title}</h2>
+  {subtitle && <p class="text-muted mt-5 max-w-2xl text-lg">{subtitle}</p>}
+</div>

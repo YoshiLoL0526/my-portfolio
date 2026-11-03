@@ -1,0 +1,38 @@
+---
+// Apache sirve esta página para cualquier ruta inexistente (ver public/.htaccess),
+// así que no sabemos el idioma en build: mostramos ambos.
+import '@/styles/global.css';
+import { site } from '@/data/site';
+import { ui } from '@/i18n/ui';
+import { localePath } from '@/i18n/utils';
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>404 — {site.name}</title>
+    <meta name="robots" content="noindex" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script is:inline>
+      try {
+        const saved = localStorage.getItem('theme');
+        document.documentElement.dataset.theme =
+          saved ?? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      } catch {}
+    </script>
+  </head>
+  <body class="grid min-h-dvh place-items-center p-4">
+    <main class="brutal bg-surface w-full max-w-xl p-8 text-center sm:p-12">
+      <p class="font-display text-pink text-8xl sm:text-9xl" style="-webkit-text-stroke: 3px var(--ink)">404</p>
+      <h1 class="mt-6 text-2xl sm:text-3xl">{ui.es['404.title']}</h1>
+      <p class="text-muted mt-2">{ui.es['404.body']}</p>
+      <p lang="en" class="text-muted mt-4 font-mono text-sm">{ui.en['404.title']} — {ui.en['404.body']}</p>
+      <div class="mt-8 flex flex-wrap justify-center gap-4">
+        <a href={localePath('es')} class="btn bg-yellow">{ui.es['404.back']}</a>
+        <a href={localePath('en')} lang="en" class="btn bg-blue">{ui.en['404.back']}</a>
+      </div>
+    </main>
+  </body>
+</html>
