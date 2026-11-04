@@ -17,6 +17,8 @@ const projects = defineCollection({
       demo: z.url().optional(),
       date: z.coerce.date(),
       featured: z.boolean().default(false),
+      // Orden curado en la home y el listado; la fecha sigue mandando al ordenar por "más recientes".
+      order: z.number().default(999),
       color: z.enum(['pink', 'blue', 'green', 'yellow', 'purple']).default('yellow'),
     }),
 });
@@ -31,6 +33,8 @@ const experience = defineCollection({
     start: z.coerce.date(),
     // Sin fecha de fin = puesto actual.
     end: z.coerce.date().optional(),
+    // Orden curado en la sección de experiencia.
+    order: z.number().default(99),
     type: z.enum(['work', 'education']).default('work'),
   }),
 });

@@ -11,9 +11,15 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 
-const entries = (await getCollection('experience', ({ id }) => id.startsWith(`${lang}/`))).sort(
-  (a, b) => b.data.start.valueOf() - a.data.start.valueOf(),
-);
+const entries = (await getCollection('experience', ({ id }) => id.startsWith(`${lang}/`))).sort((a, b) => {
+  // Orden curado; si falta, los puestos actuales (sin fecha de fin) van primero.
+  const byOrder = (a.data.order ?? 99) - (b.data.order ?? 99);
+  if (byOrder !== 0) return byOrder;
+  const aCurrent = !a.data.end;
+  const bCurrent = !b.data.end;
+  if (aCurrent !== bCurrent) return aCurrent ? -1 : 1;
+  return (b.data.end ?? b.data.start).valueOf() - (a.data.end ?? a.data.start).valueOf();
+});
 const items = await Promise.all(entries.map(async (entry) => ({ entry, Content: (await render(entry)).Content })));
 ---
 

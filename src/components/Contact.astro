@@ -10,6 +10,8 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
+// Sin una clave real de Web3Forms no mostramos un formulario que fallaría.
+const hasForm = site.web3formsKey !== 'YOUR_WEB3FORMS_ACCESS_KEY';
 ---
 
 <section id="contact" class="border-border border-t">
@@ -19,43 +21,66 @@ const t = useTranslations(lang);
     </div>
 
     <div class="grid gap-6 lg:grid-cols-[1.6fr_1fr]">
-      <form
-        action="https://api.web3forms.com/submit"
-        method="POST"
-        class="card space-y-5 p-6 sm:p-8"
-        data-reveal
-        style="--reveal-delay: 60ms"
-        data-contact-form
-        data-sending={t('contact.sending')}
-        data-success={t('contact.success')}
-        data-error={t('contact.error')}
-      >
-        <input type="hidden" name="access_key" value={site.web3formsKey} />
-        <input type="hidden" name="subject" value={`Portfolio: nuevo mensaje (${lang})`} />
-        <input type="hidden" name="from_name" value={`${site.name} — Portfolio`} />
-        <!-- Honeypot anti-spam de Web3Forms: los humanos no lo ven. -->
-        <input type="checkbox" name="botcheck" class="hidden" tabindex="-1" autocomplete="off" />
+      {
+        hasForm ? (
+          <form
+            action="https://api.web3forms.com/submit"
+            method="POST"
+            class="card space-y-5 p-6 sm:p-8"
+            data-reveal
+            style="--reveal-delay: 60ms"
+            data-contact-form
+            data-sending={t('contact.sending')}
+            data-success={t('contact.success')}
+            data-error={t('contact.error')}
+          >
+            <input type="hidden" name="access_key" value={site.web3formsKey} />
+            <input type="hidden" name="subject" value={`Portfolio: nuevo mensaje (${lang})`} />
+            <input type="hidden" name="from_name" value={`${site.fullName} — Portfolio`} />
+            {/* Honeypot anti-spam de Web3Forms: los humanos no lo ven. */}
+            <input type="checkbox" name="botcheck" class="hidden" tabindex="-1" autocomplete="off" />
 
-        <div class="grid gap-5 sm:grid-cols-2">
-          <label class="block">
-            <span class="label">{t('contact.name')}</span>
-            <input type="text" name="name" required autocomplete="name" class="field" />
-          </label>
-          <label class="block">
-            <span class="label">{t('contact.email')}</span>
-            <input type="email" name="email" required autocomplete="email" class="field" />
-          </label>
-        </div>
-        <label class="block">
-          <span class="label">{t('contact.message')}</span>
-          <textarea name="message" required rows="6" class="field resize-y"></textarea>
-        </label>
+            <div class="grid gap-5 sm:grid-cols-2">
+              <label class="block">
+                <span class="label">{t('contact.name')}</span>
+                <input type="text" name="name" required autocomplete="name" class="field" />
+              </label>
+              <label class="block">
+                <span class="label">{t('contact.email')}</span>
+                <input type="email" name="email" required autocomplete="email" class="field" />
+              </label>
+            </div>
+            <label class="block">
+              <span class="label">{t('contact.message')}</span>
+              <textarea name="message" required rows="6" class="field resize-y"></textarea>
+            </label>
 
-        <div class="flex flex-wrap items-center gap-4">
-          <button type="submit" class="btn btn-primary">{t('contact.send')}</button>
-          <p role="status" aria-live="polite" class="text-muted text-sm" data-form-status></p>
-        </div>
-      </form>
+            <div class="flex flex-wrap items-center gap-4">
+              <button type="submit" class="btn btn-primary">{t('contact.send')}</button>
+              <p role="status" aria-live="polite" class="text-muted text-sm" data-form-status></p>
+            </div>
+          </form>
+        ) : (
+          <div
+            class="card flex flex-col justify-between gap-8 p-6 sm:p-8"
+            data-reveal
+            style="--reveal-delay: 60ms"
+          >
+            <div class="space-y-3">
+              <p class="text-faint font-mono text-[10px] uppercase tracking-[0.14em]">Email</p>
+              <p class="text-xl font-semibold tracking-tight">{t('contact.cardTitle')}</p>
+              <p class="text-muted max-w-md text-sm leading-relaxed">{t('contact.subtitle')}</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-4">
+              <a href={`mailto:${site.email}`} class="btn btn-primary">
+                {t('contact.write')}
+                <span aria-hidden="true">↗</span>
+              </a>
+              <a href={`mailto:${site.email}`} class="link font-mono text-sm break-all">{site.email}</a>
+            </div>
+          </div>
+        )
+      }
 
       <aside class="card flex flex-col gap-6 p-6 sm:p-8" data-reveal style="--reveal-delay: 140ms">
         <p class="text-muted flex items-center gap-2 text-xs font-medium">

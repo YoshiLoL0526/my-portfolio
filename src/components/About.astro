@@ -14,13 +14,16 @@ const t = useTranslations(lang);
 const stats = [
   { value: `${site.stats.years}+`, label: t('about.stats.years') },
   { value: site.stats.projects, label: t('about.stats.projects') },
-  { value: site.stats.coffee, label: t('about.stats.coffee') },
+  { value: site.stats.languages, label: t('about.stats.languages') },
 ];
 
 const groups = [
-  { title: t('skills.frontend'), items: skills.frontend },
+  { title: t('skills.languages'), items: skills.languages },
   { title: t('skills.backend'), items: skills.backend },
-  { title: t('skills.tools'), items: skills.tools },
+  { title: t('skills.frontend'), items: skills.frontend },
+  { title: t('skills.ai'), items: skills.ai },
+  { title: t('skills.data'), items: skills.data },
+  { title: t('skills.infra'), items: skills.infra },
 ];
 ---
 

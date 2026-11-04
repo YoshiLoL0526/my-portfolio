@@ -1,4 +1,6 @@
 ---
+import { Image } from 'astro:assets';
+import portrait from '@/assets/raidel.png';
 import { site, stack } from '@/data/site';
 import { useTranslations } from '@/i18n/utils';
 import type { Lang } from '@/i18n/ui';
@@ -14,17 +16,29 @@ const layers = [
   { label: t('hero.stack.interface'), items: stack.interface },
   { label: t('hero.stack.logic'), items: stack.logic },
   { label: t('hero.stack.data'), items: stack.data },
+  { label: t('hero.stack.ai'), items: stack.ai },
 ];
 
-const firstName = site.name.split(' ')[0]?.toLowerCase() ?? 'dev';
 ---
 
 <div class="card stack-card relative overflow-hidden p-6" data-stack-card>
   <div class="stack-glow" aria-hidden="true"></div>
 
   <div class="relative flex items-center justify-between gap-3">
-    <p class="text-faint font-mono text-xs tracking-tight">{firstName}.stack</p>
-    <p class="text-muted flex items-center gap-2 font-mono text-[11px] uppercase tracking-wider">
+    <div class="flex min-w-0 items-center gap-3">
+      <Image
+        src={portrait}
+        alt=""
+        class="border-border size-14 shrink-0 rounded-full border object-cover"
+        widths={[56, 112]}
+        loading="eager"
+      />
+      <div class="min-w-0">
+        <p class="truncate text-sm font-semibold tracking-tight">{site.fullName}</p>
+        <p class="text-muted truncate font-mono text-[10px] uppercase tracking-wider">{t('hero.stack.role')}</p>
+      </div>
+    </div>
+    <p class="text-muted flex shrink-0 items-center gap-2 font-mono text-[11px] uppercase tracking-wider">
       <span class="relative flex size-1.5" aria-hidden="true">
         <span class="absolute inset-0 rounded-full bg-emerald-500/40"></span>
         <span class="relative size-1.5 rounded-full bg-emerald-500"></span>
@@ -51,7 +65,7 @@ const firstName = site.name.split(' ')[0]?.toLowerCase() ?? 'dev';
   </ol>
 
   <div class="border-border relative mt-6 flex items-center justify-between gap-3 border-t pt-4">
-    <p class="text-muted font-mono text-[11px]">TypeScript <span class="text-faint">end-to-end</span></p>
+    <p class="text-muted font-mono text-[11px]">Python <span class="text-faint">·</span> TypeScript</p>
     <p class="text-faint font-mono text-[11px]">build: static</p>
   </div>
 </div>

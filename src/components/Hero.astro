@@ -44,7 +44,7 @@ const [lead, rest] = t('hero.title').split('|');
     <div class="mt-9 flex flex-wrap gap-3" data-hero="fade" style="--hero-delay: 380ms">
       <a href="#projects" class="btn btn-primary">{t('hero.cta.projects')} <span aria-hidden="true">→</span></a>
       <a href="#contact" class="btn btn-secondary">{t('hero.cta.contact')}</a>
-      <a href={site.cv} class="btn btn-ghost" download>{t('hero.cta.cv')} <span aria-hidden="true">↓</span></a>
+      <a href={site.cv[lang]} class="btn btn-ghost" download>{t('hero.cta.cv')} <span aria-hidden="true">↓</span></a>
     </div>
   </div>
 

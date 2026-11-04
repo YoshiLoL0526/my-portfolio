@@ -1,9 +1,11 @@
 ---
-role: BSc in Computer Engineering
-company: University
-start: 2017-09-01
-end: 2021-06-01
+role: B.Sc. in Computer Engineering
+company: Universidad de Oriente
+location: Santiago de Cuba, Cuba
+start: 2021-09-01
+end: 2024-07-01
+order: 5
 type: education
 ---
 
-Specialisation, final project or relevant courses.
+Coursework in software engineering fundamentals, databases and systems.

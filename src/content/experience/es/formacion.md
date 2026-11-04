@@ -1,9 +1,11 @@
 ---
 role: Grado en Ingeniería Informática
-company: Universidad
-start: 2017-09-01
-end: 2021-06-01
+company: Universidad de Oriente
+location: Santiago de Cuba, Cuba
+start: 2021-09-01
+end: 2024-07-01
+order: 5
 type: education
 ---
 
-Especialización, trabajo de fin de grado o cursos relevantes.
+Formación en fundamentos de ingeniería de software, bases de datos y sistemas.

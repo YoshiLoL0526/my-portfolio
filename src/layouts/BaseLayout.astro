@@ -15,10 +15,44 @@ interface Props {
 
 const { lang, title, description } = Astro.props;
 const t = useTranslations(lang);
-const pageTitle = title ? `${title} — ${site.name}` : `${site.name} — ${site.role}`;
+const pageTitle = title ? `${title} — ${site.fullName}` : `${site.fullName} — ${t('meta.role')}`;
 const pageDescription = description ?? t('meta.description');
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL('/og.png', Astro.site);
+
+const person = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: site.fullName,
+  jobTitle: t('meta.role'),
+  description: pageDescription,
+  url: canonical.href,
+  image: ogImage.href,
+  email: `mailto:${site.email}`,
+  sameAs: site.socials.map(({ href }) => href),
+  address: { '@type': 'PostalAddress', addressCountry: 'ES' },
+  alumniOf: { '@type': 'CollegeOrUniversity', name: 'Universidad de Oriente' },
+  knowsLanguage: ['es', 'en', 'pt'],
+  knowsAbout: [
+    'Python',
+    'TypeScript',
+    'Astro',
+    'FastAPI',
+    'NestJS',
+    'React',
+    'Next.js',
+    'PostgreSQL',
+    'LLM agents',
+    'RAG',
+    'OpenAI',
+    'Anthropic',
+    'Model Context Protocol',
+    'ChromaDB',
+    'n8n',
+    'Docker',
+    'Lua',
+  ],
+};
 ---
 
 <!doctype html>
@@ -28,7 +62,9 @@ const ogImage = new URL('/og.png', Astro.site);
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>
     <meta name="description" content={pageDescription} />
+    <meta name="author" content={site.fullName} />
     <link rel="canonical" href={canonical} />
+    <script type="application/ld+json" set:html={JSON.stringify(person)} />
     {
       langs.map((l) => (
         <link rel="alternate" hreflang={l} href={new URL(switchLangPath(Astro.url.pathname, l), Astro.site)} />
@@ -40,12 +76,12 @@ const ogImage = new URL('/og.png', Astro.site);
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={pageDescription} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:site_name" content={site.name} />
+    <meta property="og:site_name" content={site.fullName} />
     <meta property="og:locale" content={lang === 'es' ? 'es_ES' : 'en_US'} />
     <meta property="og:image" content={ogImage.href} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content={`${site.name} — ${site.role}`} />
+    <meta property="og:image:alt" content={`${site.fullName} — ${t('meta.role')}`} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={pageDescription} />

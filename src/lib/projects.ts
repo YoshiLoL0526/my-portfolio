@@ -1,11 +1,14 @@
 import { getCollection } from 'astro:content';
 import type { Lang } from '@/i18n/ui';
 
-/** Proyectos de un idioma: destacados primero y luego del más reciente al más antiguo. */
+/** Proyectos de un idioma: orden curado, destacados y luego del más reciente al más antiguo. */
 export async function getProjects(lang: Lang) {
   const projects = await getCollection('projects', ({ id }) => id.startsWith(`${lang}/`));
   return projects.sort(
-    (a, b) => Number(b.data.featured) - Number(a.data.featured) || b.data.date.valueOf() - a.data.date.valueOf(),
+    (a, b) =>
+      (a.data.order ?? 999) - (b.data.order ?? 999) ||
+      Number(b.data.featured) - Number(a.data.featured) ||
+      b.data.date.valueOf() - a.data.date.valueOf(),
   );
 }
 

@@ -61,11 +61,11 @@ const metaLabel = cover ? 'text-white/60' : 'text-fg/45';
         <Image
           src={cover}
           alt=""
-          class="size-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+          class="absolute inset-0 size-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
           widths={[400, 800, 1200]}
           sizes="(min-width: 1024px) 50vw, 100vw"
         />
-        <div class="absolute inset-0 bg-gradient-to-b from-black/25 via-transparent to-black/20" aria-hidden="true" />
+        <div class="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/25" aria-hidden="true" />
       </>
     ) : (
       <div class:list={['absolute -right-2 -bottom-3 transition-transform duration-500 group-hover:-translate-x-1 group-hover:-translate-y-1 group-hover:rotate-2', glyphSize]}>
@@ -119,6 +119,29 @@ const metaLabel = cover ? 'text-white/60' : 'text-fg/45';
               </>
             )
           }
+          {
+            category === 'ai' && (
+              <>
+                <circle cx="28" cy="40" r="6" />
+                <circle cx="28" cy="80" r="6" />
+                <circle cx="60" cy="60" r="8" />
+                <circle cx="92" cy="40" r="6" />
+                <circle cx="92" cy="80" r="6" />
+                <path d="M34 44 52 56M34 76 52 64M68 56 86 44M68 64 86 76" />
+                <path d="M60 44V30M60 76v14" />
+              </>
+            )
+          }
+          {
+            category === 'game' && (
+              <>
+                <path d="M38 46h44a16 16 0 0 1 15 21l-5 14a10 10 0 0 1-17 4l-7-8H50l-7 8a10 10 0 0 1-17-4l-5-14a16 16 0 0 1 15-21Z" />
+                <path d="M42 58v12M36 64h12" />
+                <circle cx="78" cy="60" r="3" fill="currentColor" stroke="none" />
+                <circle cx="86" cy="68" r="3" fill="currentColor" stroke="none" />
+              </>
+            )
+          }
         </svg>
       </div>
     )
@@ -126,17 +149,37 @@ const metaLabel = cover ? 'text-white/60' : 'text-fg/45';
 
   <div class:list={['relative flex h-full flex-col justify-between', padding]}>
     <div class="relative flex items-start justify-between gap-3">
-      <span
-        class:list={['font-mono font-medium tracking-tight', indexSize, cover ? 'text-white/80' : 'text-fg/25']}
-        aria-hidden="true"
-      >
-        {index ? String(index).padStart(2, '0') : '—'}
-      </span>
-      <span class:list={['mt-0.5 flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.14em]', metaTone]}>
-        {t(`category.${category}`)}
-        <span class:list={[metaMuted]} aria-hidden="true">/</span>
-        {year}
-      </span>
+      {
+        cover ? (
+          <>
+            <span
+              class="rounded-full bg-black/45 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-white/85 backdrop-blur"
+              aria-hidden="true"
+            >
+              {index ? String(index).padStart(2, '0') : '—'}
+            </span>
+            <span class="rounded-full bg-black/45 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-white/85 backdrop-blur">
+              {t(`category.${category}`)}
+              <span class="text-white/45" aria-hidden="true">/</span>
+              {year}
+            </span>
+          </>
+        ) : (
+          <>
+            <span
+              class:list={['font-mono font-medium tracking-tight', indexSize, 'text-fg/25']}
+              aria-hidden="true"
+            >
+              {index ? String(index).padStart(2, '0') : '—'}
+            </span>
+            <span class:list={['mt-0.5 flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.14em]', metaTone]}>
+              {t(`category.${category}`)}
+              <span class:list={[metaMuted]} aria-hidden="true">/</span>
+              {year}
+            </span>
+          </>
+        )
+      }
     </div>
 
     <div class="relative flex items-end justify-between gap-3">
@@ -145,11 +188,11 @@ const metaLabel = cover ? 'text-white/60' : 'text-fg/45';
           <span class="bg-surface/90 border-border text-fg relative z-10 rounded-full border px-2.5 py-0.5 text-xs font-medium backdrop-blur">
             {t('projects.featured')}
           </span>
-        ) : (
+        ) : !cover ? (
           <span class:list={['font-mono text-[10px] uppercase tracking-[0.14em]', metaLabel]} aria-hidden="true">
             {tags[0]}
           </span>
-        )
+        ) : null
       }
     </div>
   </div>
