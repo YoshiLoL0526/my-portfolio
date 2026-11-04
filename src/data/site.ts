@@ -4,9 +4,9 @@ export const site = {
   fullName: 'Raidel Martínez Santos',
   role: 'Software Engineer · Backend & AI Automation',
   email: 'yoshilol0526@gmail.com',
-  location: 'España',
-  // El CV cambia según el idioma de la página.
-  cv: { es: '/cv-es.pdf', en: '/cv-en.pdf' },
+  location: { es: 'España', en: 'Spain', pt: 'Espanha' },
+  // El CV cambia según el idioma de la página. Se regeneran con `npm run cv`.
+  cv: { es: '/cv-es.pdf', en: '/cv-en.pdf', pt: '/cv-pt.pdf' },
   // Zona horaria que se muestra en el footer.
   timeZone: 'Europe/Madrid',
   socials: [
@@ -52,6 +52,16 @@ export const skills = {
     'PixiJS',
   ],
   ai: ['LLM agents', 'MCP', 'RAG', 'OpenAI', 'Anthropic', 'Ollama', 'ChromaDB', 'vector search', 'n8n'],
+  agentic: [
+    'Agentic coding',
+    'Claude Code',
+    'Codex',
+    'OpenCode',
+    'Agent orchestration',
+    'Subagents',
+    'MCP servers',
+    'Agent SDK',
+  ],
   data: ['PostgreSQL', 'SQLite', 'ChromaDB', 'Redis'],
   infra: [
     'Docker',
@@ -70,5 +80,5 @@ export const stack = {
   interface: ['React', 'Next.js', 'Astro'],
   logic: ['Python', 'FastAPI', 'NestJS'],
   data: ['PostgreSQL', 'Redis', 'ChromaDB'],
-  ai: ['n8n', 'MCP', 'RAG', 'OpenAI'],
+  ai: ['Agents', 'MCP', 'RAG', 'Claude Code', 'n8n'],
 } as const;

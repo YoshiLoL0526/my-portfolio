@@ -10,4 +10,5 @@ type: work
 - Design and build full-stack applications, APIs and integrations with cloud services and databases for clients.
 - Use containers and deploy to cloud environments with Docker; apply automated testing to improve quality.
 - Build AI solutions for chatbots, RAG and information extraction.
+- Use agentic coding tools (Claude Code, Codex and OpenCode) to orchestrate agents, review code and automate development tasks.
 - **TopSite AI:** AI website-creation platform; plans and permissions, AI page generation and editing with rollback, OpenAI and PostgreSQL.

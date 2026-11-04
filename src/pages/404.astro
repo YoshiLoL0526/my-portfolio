@@ -1,6 +1,6 @@
 ---
 // Apache sirve esta página para cualquier ruta inexistente (ver public/.htaccess),
-// así que no sabemos el idioma en build: mostramos ambos.
+// así que no sabemos el idioma en build: mostramos los tres.
 import '@/styles/global.css';
 import Logo from '@/components/Logo.astro';
 import { site } from '@/data/site';
@@ -34,9 +34,11 @@ import { localePath } from '@/i18n/utils';
       <h1 class="mt-4 text-3xl sm:text-4xl">{ui.es['404.title']}</h1>
       <p class="text-muted mt-3">{ui.es['404.body']}</p>
       <p lang="en" class="text-faint mt-2 text-sm">{ui.en['404.title']} — {ui.en['404.body']}</p>
+      <p lang="pt" class="text-faint mt-1 text-sm">{ui.pt['404.title']} — {ui.pt['404.body']}</p>
       <div class="mt-8 flex flex-wrap justify-center gap-3">
         <a href={localePath('es')} class="btn btn-primary">{ui.es['404.back']}</a>
         <a href={localePath('en')} lang="en" class="btn btn-secondary">{ui.en['404.back']}</a>
+        <a href={localePath('pt')} lang="pt" class="btn btn-secondary">{ui.pt['404.back']}</a>
       </div>
     </main>
   </body>

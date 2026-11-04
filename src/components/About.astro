@@ -24,6 +24,8 @@ const groups = [
   { title: t('skills.ai'), items: skills.ai },
   { title: t('skills.data'), items: skills.data },
   { title: t('skills.infra'), items: skills.infra },
+  // La ingeniería agéntica ocupa una fila completa para darle protagonismo.
+  { title: t('skills.agentic'), items: skills.agentic, wide: true },
 ];
 ---
 
@@ -59,8 +61,12 @@ const groups = [
     <h3 class="mt-20 mb-6 text-lg" data-reveal>{t('skills.title')}</h3>
     <div class="grid gap-4 md:grid-cols-3">
       {
-        groups.map(({ title, items }, index) => (
-          <div class="card p-5" data-reveal style={`--reveal-delay: ${index * 70}ms`}>
+        groups.map(({ title, items, wide }, index) => (
+          <div
+            class:list={['card p-5', wide && 'md:col-span-3']}
+            data-reveal
+            style={`--reveal-delay: ${index * 70}ms`}
+          >
             <p class="text-faint mb-4 font-mono text-xs tracking-wider uppercase">{title}</p>
             <ul class="flex flex-wrap gap-2">
               {items.map((item) => (

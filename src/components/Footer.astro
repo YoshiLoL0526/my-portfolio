@@ -28,7 +28,7 @@ const year = new Date().getFullYear();
           <circle cx="12" cy="12" r="9"></circle>
           <path d="M12 7v5l3 2"></path>
         </svg>
-        <span>{site.location}</span>
+        <span>{site.location[lang]}</span>
         <span class="text-faint" aria-hidden="true">·</span>
         <span data-clock data-timezone={site.timeZone}>--:--</span>
       </span>
@@ -62,7 +62,8 @@ const year = new Date().getFullYear();
 
     if (clockTimer) clearInterval(clockTimer);
 
-    const locale = document.documentElement.lang === 'es' ? 'es-ES' : 'en-GB';
+    const locales: Record<string, string> = { es: 'es-ES', en: 'en-GB', pt: 'pt-BR' };
+    const locale = locales[document.documentElement.lang] ?? 'en-GB';
     const timeZone = clock.dataset.timezone;
     const options: Intl.DateTimeFormatOptions = { hour: '2-digit', minute: '2-digit', hour12: false };
 
