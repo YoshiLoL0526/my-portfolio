@@ -1,5 +1,5 @@
 ---
-import StackCard from './StackCard.astro';
+import IdentityCard from './IdentityCard.astro';
 import { site } from '@/data/site';
 import { useTranslations } from '@/i18n/utils';
 import type { Lang } from '@/i18n/ui';
@@ -34,7 +34,7 @@ const [lead, rest] = t('hero.title').split('|');
       <span class="block">
         <span class="block" data-hero="line" style="--hero-delay: 90ms">{lead}</span>
       </span>
-      <span class="text-faint block" data-hero="line" style="--hero-delay: 180ms">{rest}</span>
+      <span class="text-accent block" data-hero="line" style="--hero-delay: 180ms">{rest}</span>
     </h1>
 
     <p class="text-muted mt-6 max-w-xl text-lg leading-relaxed" data-hero="fade" style="--hero-delay: 300ms">
@@ -48,7 +48,7 @@ const [lead, rest] = t('hero.title').split('|');
     </div>
   </div>
 
-  <div class="relative mx-auto w-full max-w-sm">
-    <StackCard lang={lang} />
+  <div class="relative w-full max-w-sm" data-hero="fade" style="--hero-delay: 240ms">
+    <IdentityCard lang={lang} />
   </div>
 </section>

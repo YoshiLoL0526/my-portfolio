@@ -18,21 +18,18 @@ const stats = [
 ];
 
 const groups = [
-  { title: t('skills.languages'), items: skills.languages },
+  { title: t('skills.agentic'), items: skills.agentic },
+  { title: t('skills.ai'), items: skills.ai },
   { title: t('skills.backend'), items: skills.backend },
   { title: t('skills.frontend'), items: skills.frontend },
-  { title: t('skills.ai'), items: skills.ai },
-  { title: t('skills.data'), items: skills.data },
   { title: t('skills.infra'), items: skills.infra },
-  // La ingeniería agéntica ocupa una fila completa para darle protagonismo.
-  { title: t('skills.agentic'), items: skills.agentic, wide: true },
 ];
 ---
 
 <section id="about" class="border-border border-t">
   <div class="mx-auto max-w-5xl px-5 py-24">
     <div data-reveal>
-      <SectionTitle eyebrow="01" title={t('about.title')} />
+      <SectionTitle title={t('about.title')} />
     </div>
 
     <div class="grid gap-12 lg:grid-cols-[1.5fr_1fr]">
@@ -41,9 +38,8 @@ const groups = [
       </div>
 
       <div class="card self-start overflow-hidden" data-reveal style="--reveal-delay: 120ms">
-        <p class="border-border text-faint flex items-center justify-between border-b px-5 py-3 font-mono text-[10px] uppercase tracking-[0.14em]">
-          <span>{t('about.stats.title')}</span>
-          <span aria-hidden="true">01—03</span>
+        <p class="border-border text-faint border-b px-5 py-3 font-mono text-[10px] uppercase tracking-[0.14em]">
+          {t('about.stats.title')}
         </p>
         <dl>
           {
@@ -58,24 +54,18 @@ const groups = [
       </div>
     </div>
 
-    <h3 class="mt-20 mb-6 text-lg" data-reveal>{t('skills.title')}</h3>
-    <div class="grid gap-4 md:grid-cols-3">
-      {
-        groups.map(({ title, items, wide }, index) => (
-          <div
-            class:list={['card p-5', wide && 'md:col-span-3']}
-            data-reveal
-            style={`--reveal-delay: ${index * 70}ms`}
-          >
-            <p class="text-faint mb-4 font-mono text-xs tracking-wider uppercase">{title}</p>
-            <ul class="flex flex-wrap gap-2">
-              {items.map((item) => (
-                <li class="border-border rounded-md border px-2.5 py-1 text-sm">{item}</li>
-              ))}
-            </ul>
-          </div>
-        ))
-      }
+    <div class="mt-20" data-reveal>
+      <h3 class="mb-6 text-lg">{t('skills.more')}</h3>
+      <dl class="border-border border-b">
+        {
+          groups.map(({ title, items }) => (
+            <div class="border-border grid gap-1 border-t py-4 sm:grid-cols-[16rem_1fr] sm:gap-6">
+              <dt class="text-muted text-sm sm:text-base">{title}</dt>
+              <dd>{items.join(' · ')}</dd>
+            </div>
+          ))
+        }
+      </dl>
     </div>
   </div>
 </section>

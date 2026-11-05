@@ -11,6 +11,8 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const year = new Date().getFullYear();
+// En la portada, la hora y las redes ya están en el cierre de contacto, justo encima.
+const isHome = /^\/(?:[a-z]{2}\/?)?$/.test(Astro.url.pathname);
 ---
 
 <footer class="border-border border-t">
@@ -23,32 +25,38 @@ const year = new Date().getFullYear();
     </p>
 
     <div class="flex flex-wrap items-center gap-x-5 gap-y-3">
-      <span class="text-muted flex items-center gap-2 font-mono text-xs" title={t('footer.local')}>
-        <svg class="text-faint size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <circle cx="12" cy="12" r="9"></circle>
-          <path d="M12 7v5l3 2"></path>
-        </svg>
-        <span>{site.location[lang]}</span>
-        <span class="text-faint" aria-hidden="true">·</span>
-        <span data-clock data-timezone={site.timeZone}>--:--</span>
-      </span>
+      {
+        !isHome && (
+          <span class="text-muted flex items-center gap-2 font-mono text-xs" title={t('footer.local')}>
+            <svg class="text-faint size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" />
+              <path d="M12 7v5l3 2" />
+            </svg>
+            <span>{site.location[lang]}</span>
+            <span class="text-faint" aria-hidden="true">·</span>
+            <span data-clock data-timezone={site.timeZone}>--:--</span>
+          </span>
+        )
+      }
 
       <a href="#" class="hover:text-fg inline-flex items-center gap-1.5 transition-colors">
         {t('footer.top')}
         <span aria-hidden="true">↑</span>
       </a>
 
-      <ul class="flex gap-4">
-        {
-          site.socials.map(({ label, href }) => (
-            <li>
-              <a href={href} target="_blank" rel="noopener noreferrer" class="hover:text-fg transition-colors">
-                {label}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
+      {
+        !isHome && (
+          <ul class="flex gap-4">
+            {site.socials.map(({ label, href }) => (
+              <li>
+                <a href={href} target="_blank" rel="noopener noreferrer" class="hover:text-fg transition-colors">
+                  {label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
     </div>
   </div>
 </footer>

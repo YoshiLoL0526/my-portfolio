@@ -1,5 +1,5 @@
 ---
-import SectionTitle from './SectionTitle.astro';
+import { siGithub } from 'simple-icons';
 import { site } from '@/data/site';
 import { useTranslations } from '@/i18n/utils';
 import type { Lang } from '@/i18n/ui';
@@ -10,157 +10,162 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
-// Sin una clave real de Web3Forms no mostramos un formulario que fallaría.
-const hasForm = site.web3formsKey !== 'YOUR_WEB3FORMS_ACCESS_KEY';
+
+// Simple Icons ya no incluye el logo de LinkedIn.
+const linkedinPath =
+  'M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z';
+const socialIcons: Record<string, string> = { GitHub: siGithub.path, LinkedIn: linkedinPath };
 ---
 
-<section id="contact" class="border-border border-t">
-  <div class="mx-auto max-w-5xl px-5 py-24">
+<section id="contact" class="theme-invert">
+  <div class="mx-auto max-w-5xl px-5 pt-24 pb-8 sm:pt-32">
     <div data-reveal>
-      <SectionTitle eyebrow="04" title={t('contact.headline')} subtitle={t('contact.subtitle')} />
+      <h2 class="contact-title">{t('contact.headline')}</h2>
+      <p class="text-muted mt-6 max-w-xl text-lg leading-relaxed sm:text-xl">{t('contact.subtitle')}</p>
     </div>
 
-    <div class="grid gap-6 lg:grid-cols-[1.6fr_1fr]">
-      {
-        hasForm ? (
-          <form
-            action="https://api.web3forms.com/submit"
-            method="POST"
-            class="card space-y-5 p-6 sm:p-8"
-            data-reveal
-            style="--reveal-delay: 60ms"
-            data-contact-form
-            data-sending={t('contact.sending')}
-            data-success={t('contact.success')}
-            data-error={t('contact.error')}
-          >
-            <input type="hidden" name="access_key" value={site.web3formsKey} />
-            <input type="hidden" name="subject" value={`Portfolio: nuevo mensaje (${lang})`} />
-            <input type="hidden" name="from_name" value={`${site.fullName} — Portfolio`} />
-            {/* Honeypot anti-spam de Web3Forms: los humanos no lo ven. */}
-            <input type="checkbox" name="botcheck" class="hidden" tabindex="-1" autocomplete="off" />
+    <div class="mt-10 flex flex-wrap items-center gap-3" data-reveal style="--reveal-delay: 80ms">
+      <a href={`mailto:${site.email}`} class="btn bg-accent text-accent-fg h-12 px-6 text-base hover:opacity-85">
+        {t('contact.write')}
+        <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 12h14M13 6l6 6-6 6"></path>
+        </svg>
+      </a>
 
-            <div class="grid gap-5 sm:grid-cols-2">
-              <label class="block">
-                <span class="label">{t('contact.name')}</span>
-                <input type="text" name="name" required autocomplete="name" class="field" />
-              </label>
-              <label class="block">
-                <span class="label">{t('contact.email')}</span>
-                <input type="email" name="email" required autocomplete="email" class="field" />
-              </label>
-            </div>
-            <label class="block">
-              <span class="label">{t('contact.message')}</span>
-              <textarea name="message" required rows="6" class="field resize-y"></textarea>
-            </label>
+      <button
+        type="button"
+        class="btn btn-secondary contact-copy h-12 px-4 font-mono"
+        aria-label={`${t('contact.copy')}: ${site.email}`}
+        title={t('contact.copy')}
+        data-copy-email={site.email}
+      >
+        <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="9" y="9" width="11" height="11" rx="2"></rect>
+          <path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"></path>
+        </svg>
+        <span class="contact-copy-labels">
+          <span data-copy-label="idle">{site.email}</span>
+          <span data-copy-label="copied">{t('contact.copied')}</span>
+          <span data-copy-label="error">{t('contact.copyError')}</span>
+        </span>
+      </button>
+      <span class="sr-only" role="status" aria-live="polite" data-copy-status></span>
+      <noscript><p class="font-mono text-sm">{site.email}</p></noscript>
+    </div>
 
-            <div class="flex flex-wrap items-center gap-4">
-              <button type="submit" class="btn btn-primary">{t('contact.send')}</button>
-              <p role="status" aria-live="polite" class="text-muted text-sm" data-form-status></p>
-            </div>
-          </form>
-        ) : (
-          <div
-            class="card flex flex-col justify-between gap-8 p-6 sm:p-8"
-            data-reveal
-            style="--reveal-delay: 60ms"
-          >
-            <div class="space-y-3">
-              <p class="text-faint font-mono text-[10px] uppercase tracking-[0.14em]">Email</p>
-              <p class="text-xl font-semibold tracking-tight">{t('contact.cardTitle')}</p>
-              <p class="text-muted max-w-md text-sm leading-relaxed">{t('contact.subtitle')}</p>
-            </div>
-            <div class="flex flex-wrap items-center gap-4">
-              <a href={`mailto:${site.email}`} class="btn btn-primary">
-                {t('contact.write')}
-                <span aria-hidden="true">↗</span>
+    <div
+      class="border-border text-muted mt-20 flex flex-col gap-5 border-t pt-6 text-sm sm:mt-28 sm:flex-row sm:items-center sm:justify-between"
+      data-reveal
+      style="--reveal-delay: 140ms"
+    >
+      <p class="flex flex-wrap items-center gap-x-5 gap-y-1">
+        <span>
+          {site.location[lang]}, <span class="tabular-nums" data-clock data-timezone={site.timeZone} title={t('footer.local')}>--:--</span>
+        </span>
+        <span>{t('contact.note')}</span>
+      </p>
+
+      <ul class="-ml-2 flex flex-wrap items-center gap-1 sm:ml-0 sm:-mr-2">
+        {
+          site.socials.map(({ label, href }) => (
+            <li>
+              <a href={href} target="_blank" rel="noopener noreferrer" class="contact-link">
+                <svg class="size-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d={socialIcons[label]} />
+                </svg>
+                {label}
               </a>
-              <a href={`mailto:${site.email}`} class="link font-mono text-sm break-all">{site.email}</a>
-            </div>
-          </div>
-        )
-      }
-
-      <aside class="card flex flex-col gap-6 p-6 sm:p-8" data-reveal style="--reveal-delay: 140ms">
-        <p class="text-muted flex items-center gap-2 text-xs font-medium">
-          <span class="relative flex size-2" aria-hidden="true">
-            <span class="absolute inset-0 rounded-full bg-emerald-500/40"></span>
-            <span class="relative size-2 rounded-full bg-emerald-500"></span>
-          </span>
-          {t('hero.available')}
-        </p>
-
-        <div>
-          <p class="font-semibold">{t('contact.direct')}</p>
-          <p class="text-muted mt-1 text-sm">{t('contact.or')}</p>
-          <a href={`mailto:${site.email}`} class="link mt-3 inline-block font-mono text-sm break-all">{site.email}</a>
-        </div>
-
-        <div class="border-border mt-auto border-t pt-6">
-          <p class="text-muted flex items-center gap-2 text-sm">
-            <svg class="text-faint size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <circle cx="12" cy="12" r="9"></circle>
-              <path d="M12 7v5l3 2"></path>
+            </li>
+          ))
+        }
+        <li>
+          <a href={site.cv[lang]} class="contact-link" download>
+            <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 4v11M7 11l5 5 5-5M5 20h14"></path>
             </svg>
-            {t('contact.note')}
-          </p>
-          <ul class="mt-4 flex flex-col gap-2">
-            {
-              site.socials.map(({ label, href }) => (
-                <li>
-                  <a
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="text-muted hover:bg-subtle hover:text-fg -mx-2 flex items-center justify-between rounded-md px-2 py-1.5 text-sm transition-colors"
-                  >
-                    {label}
-                    <span aria-hidden="true">↗</span>
-                  </a>
-                </li>
-              ))
-            }
-          </ul>
-        </div>
-      </aside>
+            {t('hero.cta.cv')}
+          </a>
+        </li>
+      </ul>
     </div>
   </div>
 </section>
 
+<style>
+  .contact-title {
+    font-size: clamp(3rem, 10vw, 6rem);
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+
+  /* Copiar necesita JavaScript; sin él se muestra la dirección como texto. */
+  .contact-copy {
+    display: none;
+  }
+
+  :global(.js) .contact-copy {
+    display: inline-flex;
+  }
+
+  /* Las tres etiquetas comparten celda para que el botón no cambie de ancho. */
+  .contact-copy-labels {
+    display: inline-grid;
+  }
+
+  .contact-copy-labels > span {
+    grid-area: 1 / 1;
+    visibility: hidden;
+  }
+
+  .contact-copy:not([data-state]) [data-copy-label='idle'],
+  .contact-copy[data-state='copied'] [data-copy-label='copied'],
+  .contact-copy[data-state='error'] [data-copy-label='error'] {
+    visibility: visible;
+  }
+
+  .contact-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding-inline: 0.5rem;
+    border-radius: 0.5rem;
+    transition: color var(--dur-fast) ease;
+  }
+
+  .contact-link:hover {
+    color: var(--fg);
+  }
+</style>
+
 <script>
-  // Envío con fetch para no salir de la página. Sin JS, el formulario se envía de forma normal.
-  function initContactForms() {
-    document.querySelectorAll<HTMLFormElement>('[data-contact-form]').forEach((form) => {
-      const status = form.querySelector<HTMLElement>('[data-form-status]')!;
-      const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
-      const { sending, success, error } = form.dataset;
+  let resetTimer: number | undefined;
 
-      form.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        button.disabled = true;
-        status.textContent = sending ?? '';
-        status.classList.remove('text-danger');
+  function initCopyEmail() {
+    const button = document.querySelector<HTMLButtonElement>('[data-copy-email]');
+    const status = document.querySelector<HTMLElement>('[data-copy-status]');
+    if (!button || !status) return;
 
-        try {
-          const response = await fetch(form.action, {
-            method: 'POST',
-            headers: { Accept: 'application/json' },
-            body: new FormData(form),
-          });
-          const result = (await response.json()) as { success?: boolean };
-          if (!response.ok || !result.success) throw new Error('Web3Forms rejected the submission');
-          status.textContent = success ?? '';
-          form.reset();
-        } catch {
-          status.textContent = error ?? '';
-          status.classList.add('text-danger');
-        } finally {
-          button.disabled = false;
-        }
-      });
+    const label = (state: string) =>
+      button.querySelector<HTMLElement>(`[data-copy-label="${state}"]`)?.textContent ?? '';
+
+    button.addEventListener('click', async () => {
+      let state = 'copied';
+      try {
+        await navigator.clipboard.writeText(button.dataset.copyEmail ?? '');
+      } catch {
+        state = 'error';
+      }
+      button.dataset.state = state;
+      status.textContent = label(state);
+
+      clearTimeout(resetTimer);
+      resetTimer = window.setTimeout(() => {
+        delete button.dataset.state;
+        status.textContent = '';
+      }, 2400);
     });
   }
 
-  document.addEventListener('astro:page-load', initContactForms);
+  document.addEventListener('astro:page-load', initCopyEmail);
 </script>

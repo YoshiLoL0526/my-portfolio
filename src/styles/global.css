@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import '@fontsource-variable/inter';
+@import '@fontsource-variable/bricolage-grotesque/opsz.css';
 @import '@fontsource-variable/jetbrains-mono';
 
 @custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
@@ -14,7 +15,7 @@
   --faint: #737373;
   --border: #e5e5e5;
   --border-strong: #d4d4d4;
-  --accent: #2563eb;
+  --accent: #c2410c;
   --accent-fg: #ffffff;
   --accent-soft: color-mix(in srgb, var(--accent) 10%, transparent);
   --danger: #dc2626;
@@ -42,7 +43,8 @@
   --faint: #8b8b93;
   --border: #27272a;
   --border-strong: #3f3f46;
-  --accent: #3b82f6;
+  --accent: #ff7a3d;
+  --accent-fg: #09090b;
   --danger: #f87171;
   --tint-pink: #2a1720;
   --tint-blue: #142035;
@@ -54,8 +56,40 @@
   color-scheme: dark;
 }
 
+/* Sección con el tema contrario al de la página: componentes y utilidades lo heredan. */
+.theme-invert {
+  --bg: #09090b;
+  --surface: #111113;
+  --subtle: #18181b;
+  --fg: #fafafa;
+  --muted: #a1a1aa;
+  --faint: #8b8b93;
+  --border: #27272a;
+  --border-strong: #3f3f46;
+  --accent: #ff7a3d;
+  --accent-fg: #09090b;
+  background-color: var(--bg);
+  color: var(--fg);
+  color-scheme: dark;
+}
+
+[data-theme='dark'] .theme-invert {
+  --bg: #fafafa;
+  --surface: #ffffff;
+  --subtle: #f4f4f5;
+  --fg: #0a0a0a;
+  --muted: #525252;
+  --faint: #737373;
+  --border: #e5e5e5;
+  --border-strong: #d4d4d4;
+  --accent: #c2410c;
+  --accent-fg: #ffffff;
+  color-scheme: light;
+}
+
 @theme inline {
   --font-sans: 'Inter Variable', system-ui, sans-serif;
+  --font-display: 'Bricolage Grotesque Variable', 'Inter Variable', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
 
   --color-bg: var(--bg);
@@ -98,8 +132,9 @@
   h1,
   h2,
   h3 {
+    font-family: var(--font-display);
     font-weight: 600;
-    letter-spacing: -0.025em;
+    letter-spacing: -0.015em;
     line-height: 1.1;
     text-wrap: balance;
   }
@@ -158,7 +193,7 @@
   }
 
   .link {
-    @apply text-fg decoration-border-strong hover:decoration-fg underline underline-offset-4 transition-colors;
+    @apply text-fg decoration-border-strong hover:decoration-accent underline underline-offset-4 transition-colors;
   }
 }
 

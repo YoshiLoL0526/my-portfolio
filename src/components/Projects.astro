@@ -21,7 +21,7 @@ const [featured, ...rest] = projects.slice(0, HOME_LIMIT);
 <section id="projects" class="border-border border-t">
   <div class="mx-auto max-w-5xl px-5 py-24">
     <div class="flex flex-wrap items-end justify-between gap-6" data-reveal>
-      <SectionTitle eyebrow="02" title={t('projects.title')} subtitle={t('projects.subtitle')} />
+      <SectionTitle title={t('projects.title')} subtitle={t('projects.subtitle')} />
       <a href={localePath(lang, 'projects')} class="btn btn-secondary mb-10">
         {t('projects.all')} ({projects.length}) <span aria-hidden="true">→</span>
       </a>
