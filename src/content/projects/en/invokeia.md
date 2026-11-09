@@ -1,10 +1,11 @@
 ---
 title: InvokeIA
 description: "Clinical management and AI automation platform: scheduling, clinical records, sales and invoicing, workflows and AI agents."
-tags: [Next.js, React, FastAPI, n8n, PostgreSQL, Docker]
+tags: [Next.js, React, n8n, FastAPI, PostgreSQL, Docker]
 category: ai
 demo: https://www.invokeia.com
 date: 2026-11-03
+featured: true
 order: 3
 color: blue
 ---
@@ -24,6 +25,6 @@ InvokeIA is a platform for clinics that brings day-to-day management and AI auto
 
 ## Technologies
 
-Next.js and React on the frontend; Python and FastAPI on the backend; n8n for automation; PostgreSQL for data; Docker for deployment. The platform integrates with the WhatsApp Business API and other communication services.
+Next.js and React on the frontend; n8n as the backend and automation engine; Python and FastAPI as the event server; PostgreSQL for data; Docker for deployment. The platform integrates with the WhatsApp Business API and other communication services.
 
 The product is in production. The public site is invokeia.com; the code and internal details are not published.

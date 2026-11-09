@@ -43,6 +43,12 @@ const padding = {
   detail: 'p-6',
 }[variant];
 
+const starSize = {
+  card: 'size-7',
+  featured: 'size-8',
+  detail: 'size-8',
+}[variant];
+
 const year = date.getUTCFullYear();
 const metaTone = cover ? 'text-white/85' : 'text-fg/55';
 const metaMuted = cover ? 'text-white/45' : 'text-fg/30';
@@ -185,9 +191,35 @@ const metaLabel = cover ? 'text-white/60' : 'text-fg/45';
     <div class="relative flex items-end justify-between gap-3">
       {
         featured ? (
-          <span class="bg-surface/90 border-border text-fg relative z-10 rounded-full border px-2.5 py-0.5 text-xs font-medium backdrop-blur">
-            {t('projects.featured')}
-          </span>
+          <svg
+            class:list={['relative z-10 overflow-visible', starSize]}
+            viewBox="0 0 24 24"
+            fill="none"
+            role="img"
+            aria-label={t('projects.featured')}
+          >
+            <defs>
+              <linearGradient
+                id={`star-gold-${slug}`}
+                x1="6"
+                y1="3"
+                x2="19"
+                y2="22"
+                gradientUnits="userSpaceOnUse"
+              >
+                <stop offset="0" stop-color="#fde68a" />
+                <stop offset="0.5" stop-color="#fbbf24" />
+                <stop offset="1" stop-color="#f59e0b" />
+              </linearGradient>
+            </defs>
+            <path
+              d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"
+              fill={`url(#star-gold-${slug})`}
+              stroke={`url(#star-gold-${slug})`}
+              stroke-width="1.5"
+              stroke-linejoin="round"
+            />
+          </svg>
         ) : !cover ? (
           <span class:list={['font-mono text-[10px] uppercase tracking-[0.14em]', metaLabel]} aria-hidden="true">
             {tags[0]}

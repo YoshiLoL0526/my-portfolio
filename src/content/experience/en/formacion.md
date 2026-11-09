@@ -8,4 +8,4 @@ order: 5
 type: education
 ---
 
-Coursework in software engineering fundamentals, databases and systems.
+**Thesis:** implementation of software capable of detecting heat loss in industrial boilers from RGB thermal images.

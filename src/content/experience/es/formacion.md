@@ -8,4 +8,4 @@ order: 5
 type: education
 ---
 
-Formación en fundamentos de ingeniería de software, bases de datos y sistemas.
+**Tesis:** implementación de un software capaz de detectar pérdidas de calor en calderas industriales a partir de imágenes térmicas RGB.

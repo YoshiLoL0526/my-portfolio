@@ -4,11 +4,11 @@ export const site = {
   fullName: 'Raidel Martínez Santos',
   role: 'Software Engineer · Backend & AI Automation',
   email: 'yoshilol0526@gmail.com',
-  location: { es: 'España', en: 'Spain', pt: 'Espanha' },
+  location: { es: 'Curitiba, Brasil', en: 'Curitiba, Brazil', pt: 'Curitiba, Brasil' },
   // El CV cambia según el idioma de la página. Se regeneran con `npm run cv`.
   cv: { es: '/cv-es.pdf', en: '/cv-en.pdf', pt: '/cv-pt.pdf' },
   // Zona horaria que se muestra en el footer.
-  timeZone: 'Europe/Madrid',
+  timeZone: 'America/Sao_Paulo',
   socials: [
     { label: 'GitHub', href: 'https://github.com/YoshiLoL0526' },
     { label: 'LinkedIn', href: 'https://www.linkedin.com/in/raidel-martínez-santos' },

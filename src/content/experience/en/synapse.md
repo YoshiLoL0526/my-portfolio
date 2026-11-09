@@ -8,7 +8,6 @@ order: 2
 type: work
 ---
 
-- Built full-stack products and AI solutions for Synapse clients, from API and data model to UI and deployment.
-- **Synopsia:** Flask RAG platform with PostgreSQL, OpenAI and JWT to manage documents, audio and folders, search by content and generate mind maps; OTP and WauSMS notifications.
-- **AiFink / AIssue Detector:** RAG backend, FastAPI issue-classification microservice with GPT-4.1 and a React conversational frontend with chat, images and confirmation.
-- **AJU/AjuntaTech:** built a web platform for the client, from API to interface.
+- **Concurrency:** adapted the services to handle concurrent users, adjusting execution flows and access to shared resources to avoid bottlenecks and keep response times stable.
+- **Observability and control:** added metrics, logs and alerts, along with service controls, to catch failures, degradation and anomalous behavior in production before they affected clients.
+- **AI products:** worked on RAG platforms for clients (Synopsia, AiFink / AIssue Detector and AJU/AjuntaTech), solving problems across API design, data modeling and integration with models and external services.
