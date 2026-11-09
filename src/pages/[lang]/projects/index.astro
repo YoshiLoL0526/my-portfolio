@@ -15,6 +15,9 @@ const lang = Astro.params.lang as Lang;
 const t = useTranslations(lang);
 const projects = await getProjects(lang);
 const tags = countTags(projects);
+// Con JS solo se ven las tecnologías más usadas; el resto aparece con "Ver todas".
+const VISIBLE_TAGS = 12;
+const hiddenTags = Math.max(0, tags.length - VISIBLE_TAGS);
 // Solo se ofrecen los tipos que tienen algún proyecto.
 const categories = projectCategories.filter((c) => projects.some((p) => p.data.category === c));
 
@@ -77,15 +80,28 @@ const chip =
 
       <fieldset>
         <legend class="label mb-3">{t('filters.tech')}</legend>
-        <div class="flex flex-wrap gap-3">
+        <div class="flex flex-wrap gap-3" data-tech-list>
           {
-            tags.map(([tag, count]) => (
-              <label class={chip}>
+            tags.map(([tag, count], index) => (
+              <label class={chip} data-extra={index >= VISIBLE_TAGS ? '' : undefined}>
                 <input type="checkbox" name="tech" value={tag} class="sr-only" />
                 {tag}
                 <span class="font-mono text-xs opacity-60">{count}</span>
               </label>
             ))
+          }
+          {
+            hiddenTags > 0 && (
+              <button
+                type="button"
+                class="tech-toggle text-muted hover:text-fg rounded-full px-3 py-1 text-sm underline-offset-4 transition-colors hover:underline"
+                aria-expanded="false"
+                data-tech-toggle
+              >
+                <span data-when="collapsed">{t('filters.more')} (+{hiddenTags})</span>
+                <span data-when="expanded">{t('filters.less')}</span>
+              </button>
+            )
           }
         </div>
       </fieldset>
@@ -121,6 +137,27 @@ const chip =
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  /* Sin JS se muestran todas las tecnologías y no hace falta el botón. */
+  .tech-toggle {
+    display: none;
+  }
+
+  :global(.js) .tech-toggle {
+    display: inline-flex;
+  }
+
+  /* Las tecnologías extra seleccionadas siguen visibles aunque la lista esté plegada. */
+  :global(.js) [data-tech-list]:not([data-expanded]) [data-extra]:not(:has(:checked)) {
+    display: none;
+  }
+
+  [data-tech-list]:not([data-expanded]) [data-when='expanded'],
+  [data-tech-list][data-expanded] [data-when='collapsed'] {
+    display: none;
+  }
+</style>
 
 <script>
   function initProjects() {
@@ -229,6 +266,13 @@ const chip =
         input.checked = tech.has(input.value);
       });
     }
+
+    const techList = form.querySelector<HTMLElement>('[data-tech-list]');
+    const techToggle = form.querySelector<HTMLButtonElement>('[data-tech-toggle]');
+    techToggle?.addEventListener('click', () => {
+      const expanded = techList?.toggleAttribute('data-expanded') ?? false;
+      techToggle.setAttribute('aria-expanded', String(expanded));
+    });
 
     form.addEventListener('input', () => apply());
     form.addEventListener('submit', (event) => event.preventDefault());

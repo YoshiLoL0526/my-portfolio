@@ -1,6 +1,8 @@
 ---
 import SectionTitle from './SectionTitle.astro';
+import { getCollection } from 'astro:content';
 import { site, skills } from '@/data/site';
+import { getProjects } from '@/lib/projects';
 import { useTranslations } from '@/i18n/utils';
 import type { Lang } from '@/i18n/ui';
 
@@ -11,10 +13,16 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 
+// Las cifras salen del contenido para no tener que actualizarlas a mano.
+const projectCount = (await getProjects(lang)).length;
+const work = await getCollection('experience', ({ id, data }) => id.startsWith(`${lang}/`) && data.type === 'work');
+const firstStart = Math.min(...work.map(({ data }) => data.start.valueOf()));
+const years = Math.floor((Date.now() - firstStart) / (365.25 * 24 * 60 * 60 * 1000));
+
 const stats = [
-  { value: `${site.stats.years}+`, label: t('about.stats.years') },
-  { value: site.stats.projects, label: t('about.stats.projects') },
-  { value: site.stats.languages, label: t('about.stats.languages') },
+  { value: `${years}+`, label: t('about.stats.years') },
+  { value: projectCount, label: t('about.stats.projects') },
+  { value: site.spokenLanguages, label: t('about.stats.languages') },
 ];
 
 const groups = [
@@ -34,7 +42,7 @@ const groups = [
 
     <div class="grid gap-12 lg:grid-cols-[1.5fr_1fr]">
       <div class="text-muted space-y-4 text-lg leading-relaxed" data-reveal style="--reveal-delay: 60ms">
-        {t('about.body').split('|').map((paragraph) => <p>{paragraph}</p>)}
+        {t('about.body').replaceAll('{years}', String(years)).split('|').map((paragraph) => <p>{paragraph}</p>)}
       </div>
 
       <div class="card self-start overflow-hidden" data-reveal style="--reveal-delay: 120ms">

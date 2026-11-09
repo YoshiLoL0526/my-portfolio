@@ -50,7 +50,13 @@ const index = ordered.findIndex((entry) => entry.id === project.id) + 1;
       }
     </header>
 
-    <div class="border-border mt-12 aspect-video overflow-hidden rounded-xl border">
+    <!-- Sin captura, la portada generada es una franja: un bloque 16:9 vacío pesa demasiado. -->
+    <div
+      class:list={[
+        'border-border mt-12 overflow-hidden rounded-xl border',
+        project.data.cover ? 'aspect-video' : 'aspect-[3/1]',
+      ]}
+    >
       <ProjectCover project={project} lang={lang} index={index} variant="detail" class="h-full" />
     </div>
 

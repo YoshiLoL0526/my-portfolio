@@ -7,7 +7,7 @@ cover: ../../../assets/projects/vaelgrim.jpg
 demo: https://vaelgrim.com
 date: 2026-10-26
 featured: true
-order: 1
+order: 3
 color: purple
 ---
 

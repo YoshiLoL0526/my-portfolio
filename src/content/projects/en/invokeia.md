@@ -6,7 +6,7 @@ category: ai
 demo: https://www.invokeia.com
 date: 2026-11-03
 featured: true
-order: 3
+order: 1
 color: blue
 ---
 

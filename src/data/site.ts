@@ -13,7 +13,8 @@ export const site = {
     { label: 'GitHub', href: 'https://github.com/YoshiLoL0526' },
     { label: 'LinkedIn', href: 'https://www.linkedin.com/in/raidel-martínez-santos' },
   ],
-  stats: { years: 4, projects: 18, languages: 3 },
+  // Idiomas hablados. Los años y el número de proyectos se calculan desde las colecciones.
+  spokenLanguages: 3,
 } as const;
 
 // Tipos de proyecto para filtrar; sus nombres visibles están en i18n/ui.ts (category.*).
