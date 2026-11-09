@@ -34,7 +34,7 @@ const groups = [
 ];
 ---
 
-<section id="about" class="border-border border-t">
+<section id="about" class="border-border border-t" data-guide="about">
   <div class="mx-auto max-w-5xl px-5 py-24">
     <div data-reveal>
       <SectionTitle title={t('about.title')} />
@@ -62,7 +62,7 @@ const groups = [
       </div>
     </div>
 
-    <div class="mt-20" data-reveal>
+    <div class="mt-20" data-reveal data-guide="skills">
       <h3 class="mb-6 text-lg">{t('skills.more')}</h3>
       <dl class="border-border border-b">
         {

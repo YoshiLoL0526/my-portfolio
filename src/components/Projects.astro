@@ -18,7 +18,7 @@ const projects = await getProjects(lang);
 const [featured, ...rest] = projects.slice(0, HOME_LIMIT);
 ---
 
-<section id="projects" class="border-border border-t">
+<section id="projects" class="border-border border-t" data-guide="projects">
   <div class="mx-auto max-w-5xl px-5 py-24">
     <div class="flex flex-wrap items-end justify-between gap-6" data-reveal>
       <SectionTitle title={t('projects.title')} subtitle={t('projects.subtitle')} />

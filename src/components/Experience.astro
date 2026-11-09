@@ -23,7 +23,7 @@ const entries = (await getCollection('experience', ({ id }) => id.startsWith(`${
 const items = await Promise.all(entries.map(async (entry) => ({ entry, Content: (await render(entry)).Content })));
 ---
 
-<section id="experience" class="border-border border-t">
+<section id="experience" class="border-border border-t" data-guide="experience">
   <div class="mx-auto max-w-5xl px-5 py-24">
     <div data-reveal>
       <SectionTitle title={t('experience.title')} />

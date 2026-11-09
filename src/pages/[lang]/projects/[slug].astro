@@ -28,7 +28,7 @@ const index = ordered.findIndex((entry) => entry.id === project.id) + 1;
 ---
 
 <BaseLayout lang={lang} title={title} description={description}>
-  <article class="mx-auto max-w-3xl px-5 pt-12 pb-24">
+  <article class="mx-auto max-w-3xl px-5 pt-12 pb-24" data-guide="projectDetail">
     <a href={localePath(lang, 'projects')} class="text-muted hover:text-fg inline-flex items-center gap-1.5 text-sm transition-colors">
       <span aria-hidden="true">←</span> {t('projects.back')}
     </a>

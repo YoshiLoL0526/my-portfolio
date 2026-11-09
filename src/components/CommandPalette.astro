@@ -1,0 +1,441 @@
+---
+// Paleta de comandos (Ctrl/⌘ + K): saltar a secciones y proyectos y lanzar acciones sin tocar el ratón.
+import { site } from '@/data/site';
+import { getProjects } from '@/lib/projects';
+import { langs, localePath, splitEntryId, switchLangPath, useTranslations } from '@/i18n/utils';
+import { languages, type Lang } from '@/i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+interface Item {
+  label: string;
+  hint?: string;
+  href?: string;
+  action?: 'theme' | 'copy' | 'guide';
+  external?: boolean;
+  download?: boolean;
+  hreflang?: string;
+  keywords?: string;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const home = localePath(lang);
+const projects = await getProjects(lang);
+
+const groups: { title: string; items: Item[] }[] = [
+  {
+    title: t('palette.sections'),
+    items: [
+      { label: t('palette.home'), href: home },
+      { label: t('nav.about'), href: `${home}#about` },
+      { label: t('nav.projects'), href: `${home}#projects` },
+      { label: t('nav.experience'), href: `${home}#experience` },
+      { label: t('nav.contact'), href: `${home}#contact` },
+      { label: t('projects.all'), href: localePath(lang, 'projects'), hint: String(projects.length) },
+    ],
+  },
+  {
+    title: t('palette.actions'),
+    items: [
+      { label: t('palette.theme'), action: 'theme' },
+      { label: t('contact.copy'), action: 'copy', hint: site.email, keywords: 'mail correo' },
+      { label: t('hero.cta.cv'), href: site.cv[lang], download: true, hint: 'PDF', keywords: 'cv resume curriculum' },
+      { label: t('palette.guide'), action: 'guide', keywords: 'bit robot' },
+      ...langs
+        .filter((other) => other !== lang)
+        .map((other) => ({
+          label: languages[other],
+          href: switchLangPath(Astro.url.pathname, other),
+          hreflang: other,
+          hint: other.toUpperCase(),
+          keywords: 'language idioma lang',
+        })),
+      ...site.socials.map(({ label, href }) => ({ label, href, external: true, hint: '↗' })),
+    ],
+  },
+  {
+    title: t('palette.projects'),
+    items: projects.map(({ id, data }) => ({
+      label: data.title,
+      href: localePath(lang, `projects/${splitEntryId(id).slug}`),
+      hint: t(`category.${data.category}`),
+      keywords: data.tags.join(' '),
+    })),
+  },
+];
+
+const searchText = ({ label, hint, keywords }: Item) =>
+  [label, hint, keywords]
+    .filter(Boolean)
+    .join(' ')
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
+    .toLowerCase();
+---
+
+<dialog class="palette" data-palette data-email={site.email} aria-label={t('palette.open')}>
+  <div class="palette-search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+      <circle cx="11" cy="11" r="7"></circle>
+      <path d="M20 20l-3.5-3.5"></path>
+    </svg>
+    <input
+      type="text"
+      data-palette-input
+      placeholder={t('palette.placeholder')}
+      aria-label={t('palette.placeholder')}
+      aria-controls="palette-list"
+      autocomplete="off"
+      autocapitalize="off"
+      spellcheck="false"
+    />
+    <kbd>Esc</kbd>
+  </div>
+
+  <div class="palette-list" id="palette-list" role="listbox" aria-label={t('palette.open')} data-palette-list>
+    {
+      groups.map(({ title, items }) => (
+        <div role="group" aria-label={title} data-palette-group>
+          <p class="palette-heading" aria-hidden="true">
+            {title}
+          </p>
+          {items.map((item) =>
+            item.href ? (
+              <a
+                class="palette-item"
+                role="option"
+                href={item.href}
+                hreflang={item.hreflang}
+                download={item.download}
+                target={item.external ? '_blank' : undefined}
+                rel={item.external ? 'noopener noreferrer' : undefined}
+                data-palette-item
+                data-search={searchText(item)}
+              >
+                <span>{item.label}</span>
+                {item.hint && <span class="palette-hint">{item.hint}</span>}
+              </a>
+            ) : (
+              <button
+                type="button"
+                class="palette-item"
+                role="option"
+                data-palette-item
+                data-action={item.action}
+                data-search={searchText(item)}
+              >
+                <span>{item.label}</span>
+                {item.hint && <span class="palette-hint">{item.hint}</span>}
+              </button>
+            ),
+          )}
+        </div>
+      ))
+    }
+    <p class="palette-empty" data-palette-empty hidden>{t('palette.empty')}</p>
+  </div>
+
+  <p class="palette-foot" aria-hidden="true">
+    <span><kbd>↑</kbd><kbd>↓</kbd> {t('palette.nav')}</span>
+    <span><kbd>↵</kbd> {t('palette.select')}</span>
+  </p>
+</dialog>
+
+<style>
+  .palette {
+    width: min(36rem, calc(100vw - 1.5rem));
+    max-width: none;
+    max-height: min(30rem, 72vh);
+    margin: 13vh auto auto;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid var(--border-strong);
+    border-radius: 0.9rem;
+    background: var(--surface);
+    color: var(--fg);
+    box-shadow: 0 24px 60px -12px rgb(0 0 0 / 0.45);
+  }
+
+  .palette[open] {
+    display: flex;
+    flex-direction: column;
+    animation: palette-in 180ms var(--ease-out);
+  }
+
+  .palette::backdrop {
+    background: rgb(0 0 0 / 0.45);
+    backdrop-filter: blur(3px);
+  }
+
+  .palette-search {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.9rem 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .palette-search svg {
+    flex: none;
+    width: 1.05rem;
+    height: 1.05rem;
+    color: var(--faint);
+  }
+
+  .palette-search input {
+    flex: 1;
+    min-width: 0;
+    background: none;
+    font-size: 0.95rem;
+    outline: none;
+  }
+
+  .palette-search input::placeholder {
+    color: var(--faint);
+  }
+
+  kbd {
+    display: inline-grid;
+    min-width: 1.4rem;
+    height: 1.4rem;
+    padding-inline: 0.35rem;
+    place-items: center;
+    border: 1px solid var(--border);
+    border-radius: 0.3rem;
+    background: var(--subtle);
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+  }
+
+  .palette-list {
+    flex: 1;
+    padding: 0.4rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .palette-heading {
+    padding: 0.6rem 0.65rem 0.3rem;
+    color: var(--faint);
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .palette-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.5rem 0.65rem;
+    border-radius: 0.5rem;
+    color: var(--muted);
+    font-size: 0.875rem;
+    text-align: left;
+    cursor: pointer;
+    outline: none;
+  }
+
+  .palette-item[data-active] {
+    background: var(--subtle);
+    color: var(--fg);
+    box-shadow: inset 2px 0 0 var(--accent);
+  }
+
+  .palette-hint {
+    margin-left: auto;
+    overflow: hidden;
+    color: var(--faint);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .palette-empty {
+    padding: 2rem 1rem;
+    color: var(--muted);
+    font-size: 0.875rem;
+    text-align: center;
+  }
+
+  .palette-foot {
+    display: flex;
+    gap: 1.1rem;
+    padding: 0.55rem 1rem;
+    border-top: 1px solid var(--border);
+    color: var(--faint);
+    font-size: 0.7rem;
+  }
+
+  .palette-foot span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  @keyframes palette-in {
+    from {
+      opacity: 0;
+      transform: translateY(-6px) scale(0.985);
+    }
+  }
+
+  @media print {
+    .palette {
+      display: none !important;
+    }
+  }
+</style>
+
+<script>
+  let teardown: AbortController | undefined;
+
+  const normalize = (value: string) =>
+    value
+      .normalize('NFD')
+      .replace(/\p{Diacritic}/gu, '')
+      .toLowerCase();
+
+  function initPalette() {
+    teardown?.abort();
+
+    const dialog = document.querySelector<HTMLDialogElement>('[data-palette]');
+    if (!dialog || typeof dialog.showModal !== 'function') return;
+
+    teardown = new AbortController();
+    const { signal } = teardown;
+
+    const input = dialog.querySelector<HTMLInputElement>('[data-palette-input]')!;
+    const list = dialog.querySelector<HTMLElement>('[data-palette-list]')!;
+    const empty = dialog.querySelector<HTMLElement>('[data-palette-empty]')!;
+    const groups = [...dialog.querySelectorAll<HTMLElement>('[data-palette-group]')];
+    const items = [...dialog.querySelectorAll<HTMLElement>('[data-palette-item]')];
+
+    let visible = items;
+    let active = 0;
+
+    const setActive = (index: number, scroll = true) => {
+      active = index;
+      visible.forEach((item, position) => {
+        item.toggleAttribute('data-active', position === index);
+        item.setAttribute('aria-selected', String(position === index));
+      });
+      if (scroll) visible[index]?.scrollIntoView({ block: 'nearest' });
+    };
+
+    const filter = () => {
+      const terms = normalize(input.value).split(/\s+/).filter(Boolean);
+      visible = items.filter((item) => {
+        const match = terms.every((term) => item.dataset.search!.includes(term));
+        item.hidden = !match;
+        if (!match) item.removeAttribute('data-active');
+        return match;
+      });
+      groups.forEach((group) => {
+        group.hidden = !group.querySelector('[data-palette-item]:not([hidden])');
+      });
+      empty.hidden = visible.length > 0;
+      setActive(0);
+    };
+
+    const open = () => {
+      if (dialog.open) return;
+      input.value = '';
+      filter();
+      dialog.showModal();
+      list.scrollTop = 0;
+      input.focus();
+    };
+
+    const close = () => {
+      if (dialog.open) dialog.close();
+    };
+
+    const say = (key: string) => document.dispatchEvent(new CustomEvent('guide:say', { detail: key }));
+
+    const run = async (action: string) => {
+      if (action === 'theme') document.querySelector<HTMLElement>('[data-theme-toggle]')?.click();
+      if (action === 'guide') document.querySelector<HTMLElement>('[data-guide-toggle]')?.click();
+      if (action === 'copy') {
+        try {
+          await navigator.clipboard.writeText(dialog.dataset.email ?? '');
+          say('react.copied');
+        } catch {}
+      }
+    };
+
+    document.addEventListener(
+      'keydown',
+      (event) => {
+        if (!(event.ctrlKey || event.metaKey) || event.altKey || event.key.toLowerCase() !== 'k') return;
+        event.preventDefault();
+        if (dialog.open) close();
+        else open();
+      },
+      { signal },
+    );
+
+    document.addEventListener(
+      'click',
+      (event) => {
+        if ((event.target as Element).closest('[data-palette-open]')) open();
+      },
+      { signal },
+    );
+
+    input.addEventListener('input', filter, { signal });
+
+    dialog.addEventListener(
+      'keydown',
+      (event) => {
+        if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+          event.preventDefault();
+          if (!visible.length) return;
+          const delta = event.key === 'ArrowDown' ? 1 : -1;
+          setActive((active + delta + visible.length) % visible.length);
+        } else if (event.key === 'Enter') {
+          event.preventDefault();
+          visible[active]?.click();
+        }
+      },
+      { signal },
+    );
+
+    dialog.addEventListener(
+      'click',
+      (event) => {
+        // Un clic fuera del panel cae sobre el propio <dialog> (su ::backdrop).
+        if (event.target === dialog) return close();
+
+        const item = (event.target as Element).closest<HTMLElement>('[data-palette-item]');
+        if (!item) return;
+        close();
+        if (item.dataset.action) run(item.dataset.action);
+      },
+      { signal },
+    );
+
+    list.addEventListener(
+      'pointermove',
+      (event) => {
+        const item = (event.target as Element).closest<HTMLElement>('[data-palette-item]');
+        const index = item ? visible.indexOf(item) : -1;
+        if (index >= 0 && index !== active) setActive(index, false);
+      },
+      { signal },
+    );
+
+    // En Mac el atajo es ⌘K.
+    if (/Mac|iPhone|iPad/.test(navigator.platform)) {
+      document.querySelectorAll('[data-palette-kbd]').forEach((hint) => (hint.textContent = '⌘K'));
+    }
+  }
+
+  document.addEventListener('astro:page-load', initPalette);
+</script>

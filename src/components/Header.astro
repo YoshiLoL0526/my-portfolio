@@ -52,6 +52,23 @@ const navLink =
     </ul>
 
     <div class="flex items-center gap-1">
+      <button
+        type="button"
+        class="icon-btn w-auto grid-flow-col gap-2 px-2.5"
+        data-palette-open
+        aria-label={t('palette.open')}
+        title={t('palette.open')}
+      >
+        <svg class="size-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"></circle>
+          <path d="M20 20l-3.5-3.5"></path>
+        </svg>
+        <span
+          class="border-border text-faint hidden rounded border px-1.5 py-0.5 font-mono text-[10px] lg:inline"
+          data-palette-kbd
+          aria-hidden="true">Ctrl K</span
+        >
+      </button>
       <LanguagePicker lang={lang} />
       <ThemeToggle label={t('theme.toggle')} />
       <details class="relative md:hidden">

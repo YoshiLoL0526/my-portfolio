@@ -3,6 +3,8 @@ import { ClientRouter } from 'astro:transitions';
 import '@/styles/global.css';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
+import Guide from '@/components/Guide.astro';
+import CommandPalette from '@/components/CommandPalette.astro';
 import { site } from '@/data/site';
 import { langs, switchLangPath, useTranslations } from '@/i18n/utils';
 import type { Lang } from '@/i18n/ui';
@@ -130,6 +132,8 @@ const person = {
       <slot />
     </main>
     <Footer lang={lang} />
+    <Guide lang={lang} />
+    <CommandPalette lang={lang} />
     <script>
       let revealObserver: IntersectionObserver | undefined;
 

@@ -1,0 +1,721 @@
+---
+// Bit: el robot que acompaña el scroll y explica cada sección.
+// Cualquier elemento con `data-guide="<clave>"` es una parada; su texto es `guide.msg.<clave>` en i18n/ui.ts.
+import { useTranslations } from '@/i18n/utils';
+import type { Lang, UiKey } from '@/i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const stops = ['hero', 'stack', 'about', 'skills', 'projects', 'experience', 'contact', 'projectsPage', 'projectDetail'];
+// Frases cortas con las que reacciona a lo que hace el visitante (copiar el correo, cambiar de tema…).
+const reactions = ['copied', 'themeDark', 'themeLight', 'cv', 'paused', 'playing', 'external', 'lang'];
+const messages = Object.fromEntries([
+  ...stops.map((stop) => [stop, t(`guide.msg.${stop}` as UiKey)]),
+  ...reactions.map((reaction) => [`react.${reaction}`, t(`guide.react.${reaction}` as UiKey)]),
+]);
+
+// Preguntas rápidas: Bit responde y lleva a la sección donde está el detalle.
+const questions = [
+  { id: 'now', target: 'experience' },
+  { id: 'stack', target: 'stack' },
+  { id: 'best', target: 'projects' },
+  { id: 'hire', target: 'contact' },
+].map(({ id, target }) => ({ id, target, q: t(`guide.q.${id}` as UiKey), a: t(`guide.a.${id}` as UiKey) }));
+---
+
+<aside
+  class="guide"
+  data-guide-root
+  data-messages={JSON.stringify(messages)}
+  data-questions={JSON.stringify(questions)}
+  aria-label={t('guide.label')}
+  hidden
+>
+  <div class="guide-bubble" id="guide-bubble" data-guide-bubble>
+    <div class="guide-head">
+      <span class="guide-name">{t('guide.name')}</span>
+      <span class="guide-step" data-guide-step aria-hidden="true"></span>
+      <button type="button" class="guide-close" data-guide-close aria-label={t('guide.close')} title={t('guide.close')}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <path d="M6 6l12 12M18 6L6 18"></path>
+        </svg>
+      </button>
+    </div>
+    <p class="guide-text">
+      <span data-guide-text aria-hidden="true"></span><span class="guide-caret" aria-hidden="true"></span>
+      <span class="sr-only" data-guide-full></span>
+    </p>
+    <!-- Plegadas por defecto para que el bocadillo no tape contenido. -->
+    <details class="guide-asks" data-guide-asks>
+      <summary>
+        {t('guide.ask')}
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M9 6l6 6-6 6"></path>
+        </svg>
+      </summary>
+      <ul>
+        {
+          questions.map(({ id, q }) => (
+            <li>
+              <button type="button" class="guide-ask" data-guide-ask={id}>
+                {q}
+              </button>
+            </li>
+          ))
+        }
+      </ul>
+    </details>
+  </div>
+
+  <button
+    type="button"
+    class="guide-bot"
+    data-guide-toggle
+    aria-controls="guide-bubble"
+    aria-expanded="false"
+    aria-label={t('guide.toggle')}
+    title={t('guide.toggle')}
+  >
+    <svg viewBox="0 0 48 48" aria-hidden="true">
+      <path class="bot-line" d="M24 11V6.5"></path>
+      <circle class="bot-antenna" cx="24" cy="5" r="2.6"></circle>
+      <rect class="bot-body" x="3.5" y="19.5" width="5" height="9" rx="2.5"></rect>
+      <rect class="bot-body" x="39.5" y="19.5" width="5" height="9" rx="2.5"></rect>
+      <rect class="bot-body" x="7" y="11" width="34" height="27" rx="9.5"></rect>
+      <rect class="bot-visor" x="11.5" y="16" width="25" height="12.5" rx="6.25"></rect>
+      <g class="bot-eyes">
+        <rect class="bot-eye" x="16.6" y="19.6" width="4.4" height="5.4" rx="2.2"></rect>
+        <rect class="bot-eye" x="27" y="19.6" width="4.4" height="5.4" rx="2.2"></rect>
+      </g>
+      <rect class="bot-mouth" x="20.5" y="31.6" width="7" height="1.8" rx="0.9"></rect>
+    </svg>
+    <span class="guide-unread" aria-hidden="true"></span>
+  </button>
+</aside>
+
+<style>
+  .guide {
+    position: fixed;
+    right: clamp(0.75rem, 2.5vw, 1.75rem);
+    bottom: calc(clamp(0.75rem, 2.5vw, 1.75rem) + var(--lift, 0px));
+    z-index: 30;
+    opacity: 0;
+    transform: translateY(12px);
+    transition:
+      opacity var(--dur-slow) var(--ease-out),
+      transform var(--dur-slow) var(--ease-out),
+      bottom var(--dur-fast) linear;
+  }
+
+  .guide.is-ready {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ---------- Robot ---------- */
+  .guide-bot {
+    position: relative;
+    display: block;
+    width: 3.5rem;
+    height: 3.5rem;
+    margin-left: auto;
+    cursor: pointer;
+    border-radius: 1rem;
+    filter: drop-shadow(0 6px 14px rgb(0 0 0 / 0.22));
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+
+  .guide-bot:hover {
+    transform: translateY(-2px) rotate(-4deg);
+  }
+
+  .guide-bot svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    animation: bot-float 4.5s ease-in-out infinite;
+  }
+
+  .bot-body {
+    fill: var(--fg);
+  }
+
+  .bot-line {
+    stroke: var(--fg);
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+
+  .bot-visor,
+  .bot-mouth {
+    fill: var(--bg);
+  }
+
+  .bot-antenna,
+  .bot-eye {
+    fill: var(--accent);
+  }
+
+  .bot-body,
+  .bot-visor,
+  .bot-mouth {
+    transition: fill var(--dur-base) var(--ease-out);
+  }
+
+  /* Sobre una sección con el tema invertido el robot también se invierte para no perderse en el fondo. */
+  .on-invert .bot-body {
+    fill: var(--bg);
+  }
+
+  .on-invert .bot-line {
+    stroke: var(--bg);
+  }
+
+  .on-invert .bot-visor,
+  .on-invert .bot-mouth {
+    fill: var(--fg);
+  }
+
+  .bot-eyes {
+    transform: translate(var(--look-x, 0px), var(--look-y, 0px));
+    transition: transform 180ms var(--ease-out);
+  }
+
+  .bot-eye {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: bot-blink 5.2s infinite;
+  }
+
+  .bot-mouth {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .bot-antenna {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .is-talking .bot-mouth {
+    animation: bot-talk 260ms ease-in-out infinite alternate;
+  }
+
+  .is-talking .bot-antenna {
+    animation: bot-pulse 700ms ease-in-out infinite alternate;
+  }
+
+  .guide-unread {
+    position: absolute;
+    top: 0.35rem;
+    right: 0.1rem;
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 999px;
+    background: var(--accent);
+    box-shadow: 0 0 0 2px var(--bg);
+    opacity: 0;
+    transform: scale(0.4);
+    transition:
+      opacity var(--dur-base) var(--ease-out),
+      transform var(--dur-base) var(--ease-out);
+  }
+
+  .has-unread:not(.is-open) .guide-unread {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ---------- Bocadillo ---------- */
+  .guide-bubble {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 0.85rem);
+    width: min(20rem, calc(100vw - 1.5rem));
+    padding: 0.8rem 0.95rem 0.95rem;
+    border: 1px solid var(--border-strong);
+    border-radius: 0.9rem;
+    background: var(--surface);
+    color: var(--fg);
+    box-shadow: var(--elev-hover);
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+    transform-origin: calc(100% - 1.75rem) 100%;
+    transition:
+      opacity var(--dur-base) var(--ease-out),
+      transform var(--dur-base) var(--ease-out),
+      visibility 0s linear var(--dur-base);
+  }
+
+  .is-open .guide-bubble {
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+    transition-delay: 0s;
+  }
+
+  .guide-bubble::after {
+    content: '';
+    position: absolute;
+    right: 1.4rem;
+    bottom: -0.4rem;
+    width: 0.7rem;
+    height: 0.7rem;
+    border-right: 1px solid var(--border-strong);
+    border-bottom: 1px solid var(--border-strong);
+    background: var(--surface);
+    transform: rotate(45deg);
+  }
+
+  .guide-head {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .guide-name {
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .guide-step {
+    color: var(--faint);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .guide-close {
+    display: grid;
+    width: 1.5rem;
+    height: 1.5rem;
+    margin: -0.2rem -0.3rem 0 auto;
+    place-items: center;
+    border-radius: 0.4rem;
+    color: var(--faint);
+    cursor: pointer;
+    transition:
+      color var(--dur-fast),
+      background-color var(--dur-fast);
+  }
+
+  .guide-close:hover {
+    background: var(--subtle);
+    color: var(--fg);
+  }
+
+  .guide-close svg {
+    width: 0.8rem;
+    height: 0.8rem;
+  }
+
+  .guide-text {
+    min-height: 2.9em;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    text-wrap: pretty;
+  }
+
+  .guide-asks {
+    margin-top: 0.7rem;
+    padding-top: 0.55rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .guide-asks summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--muted);
+    font-size: 0.75rem;
+    list-style: none;
+    cursor: pointer;
+    transition: color var(--dur-fast);
+  }
+
+  .guide-asks summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .guide-asks summary:hover {
+    color: var(--fg);
+  }
+
+  .guide-asks summary svg {
+    width: 0.75rem;
+    height: 0.75rem;
+    transition: transform var(--dur-fast) var(--ease-out);
+  }
+
+  .guide-asks[open] summary svg {
+    transform: rotate(90deg);
+  }
+
+  .guide-asks ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: 0.55rem;
+  }
+
+  .guide-ask {
+    padding: 0.2rem 0.6rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--muted);
+    font-size: 0.72rem;
+    line-height: 1.5;
+    cursor: pointer;
+    transition:
+      color var(--dur-fast),
+      border-color var(--dur-fast),
+      background-color var(--dur-fast);
+  }
+
+  .guide-ask:hover {
+    border-color: var(--border-strong);
+    background: var(--subtle);
+    color: var(--fg);
+  }
+
+  .guide-caret {
+    display: inline-block;
+    width: 0.4em;
+    height: 0.95em;
+    margin-left: 0.15em;
+    border-radius: 1px;
+    background: var(--accent);
+    vertical-align: -0.12em;
+    opacity: 0;
+  }
+
+  .is-talking .guide-caret {
+    opacity: 1;
+  }
+
+  @keyframes bot-float {
+    50% {
+      transform: translateY(-3px);
+    }
+  }
+
+  @keyframes bot-blink {
+    0%,
+    46%,
+    50%,
+    100% {
+      transform: scaleY(1);
+    }
+    48% {
+      transform: scaleY(0.12);
+    }
+  }
+
+  @keyframes bot-talk {
+    to {
+      transform: scale(0.55, 1.9);
+    }
+  }
+
+  @keyframes bot-pulse {
+    to {
+      transform: scale(1.3);
+    }
+  }
+
+  @media print {
+    .guide {
+      display: none !important;
+    }
+  }
+</style>
+
+<script>
+  const STORAGE_KEY = 'guide';
+  const TYPE_MS = 14;
+  const PEEK_MS = 6000;
+  const LANG_FLAG = 'guide-lang';
+
+  let teardown: AbortController | undefined;
+
+  function initGuide() {
+    teardown?.abort();
+
+    const root = document.querySelector<HTMLElement>('[data-guide-root]');
+    if (!root) return;
+
+    const messages: Record<string, string> = JSON.parse(root.dataset.messages ?? '{}');
+    const stops = [...document.querySelectorAll<HTMLElement>('[data-guide]')].filter(
+      (stop) => messages[stop.dataset.guide ?? ''],
+    );
+    if (!stops.length) return;
+
+    teardown = new AbortController();
+    const { signal } = teardown;
+
+    const toggle = root.querySelector<HTMLButtonElement>('[data-guide-toggle]')!;
+    const close = root.querySelector<HTMLButtonElement>('[data-guide-close]')!;
+    const text = root.querySelector<HTMLElement>('[data-guide-text]')!;
+    const full = root.querySelector<HTMLElement>('[data-guide-full]')!;
+    const step = root.querySelector<HTMLElement>('[data-guide-step]')!;
+    const footer = document.querySelector<HTMLElement>('body > footer');
+
+    const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const compact = matchMedia('(max-width: 639px)');
+
+    let muted = false;
+    try {
+      muted = localStorage.getItem(STORAGE_KEY) === 'off';
+    } catch {}
+
+    const questions: { id: string; target: string; a: string }[] = JSON.parse(root.dataset.questions ?? '[]');
+
+    let greeting: string | undefined;
+    try {
+      if (sessionStorage.getItem(LANG_FLAG)) greeting = 'react.lang';
+      sessionStorage.removeItem(LANG_FLAG);
+    } catch {}
+
+    let hold: { stop: HTMLElement; until: number } | undefined;
+    let current: HTMLElement | undefined;
+    let typeTimer: number | undefined;
+    let peekTimer: number | undefined;
+    let lookTimer: number | undefined;
+    let lastY = window.scrollY;
+    let frame = 0;
+
+    const setOpen = (open: boolean) => {
+      root.classList.toggle('is-open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+      if (open) root.classList.remove('has-unread');
+    };
+
+    // En pantallas pequeñas el bocadillo tapa contenido: se recoge solo al terminar de leer.
+    const schedulePeek = () => {
+      clearTimeout(peekTimer);
+      if (!compact.matches) return;
+      peekTimer = window.setTimeout(() => setOpen(false), PEEK_MS);
+    };
+
+    const say = (message: string) => {
+      clearInterval(typeTimer);
+      clearTimeout(peekTimer);
+      full.textContent = message;
+
+      if (reduceMotion || !root.classList.contains('is-open')) {
+        text.textContent = message;
+        root.classList.remove('is-talking');
+        schedulePeek();
+        return;
+      }
+
+      let shown = 0;
+      text.textContent = '';
+      root.classList.add('is-talking');
+      typeTimer = window.setInterval(() => {
+        shown += 1;
+        text.textContent = message.slice(0, shown);
+        if (shown < message.length) return;
+        clearInterval(typeTimer);
+        root.classList.remove('is-talking');
+        schedulePeek();
+      }, TYPE_MS);
+    };
+
+    const mark = (stop: HTMLElement) => {
+      current = stop;
+      root.classList.toggle('on-invert', Boolean(stop.closest('.theme-invert')));
+      step.textContent = stops.length > 1 ? `${stops.indexOf(stop) + 1}/${stops.length}` : '';
+    };
+
+    const goTo = (stop: HTMLElement) => {
+      if (stop === current) return;
+      mark(stop);
+      root.querySelector('[data-guide-asks]')?.removeAttribute('open');
+      if (muted) root.classList.add('has-unread');
+      else setOpen(true);
+      // Tras cambiar de idioma saluda una vez en lugar de repetir la presentación.
+      say(messages[greeting ?? stop.dataset.guide!]);
+      greeting = undefined;
+    };
+
+    // Una reacción puntual; si la guía está oculta, Bit se queda callado.
+    const react = (key: string) => {
+      if (muted || !messages[key]) return;
+      setOpen(true);
+      say(messages[key]);
+    };
+
+    // Responde y lleva a la sección; la respuesta se mantiene hasta que el visitante cambie de sección.
+    const ask = (id: string) => {
+      const question = questions.find((entry) => entry.id === id);
+      if (!question) return;
+      root.querySelector('[data-guide-asks]')?.removeAttribute('open');
+      setMuted(false);
+      setOpen(true);
+      say(question.a);
+
+      const stop = stops.find((entry) => entry.dataset.guide === question.target);
+      if (!stop || stop === current) return;
+      hold = { stop, until: performance.now() + 3000 };
+      stop.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+    };
+
+    const update = () => {
+      frame = 0;
+      const line = window.innerHeight * 0.55;
+      const atEnd = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 4;
+      let active = stops[0];
+      for (const stop of stops) {
+        if (stop.getBoundingClientRect().top <= line) active = stop;
+      }
+      const target = atEnd ? stops[stops.length - 1] : active;
+
+      if (hold) {
+        // Durante el salto de una pregunta se ignoran las secciones intermedias.
+        if (target === hold.stop) {
+          mark(target);
+          hold = undefined;
+        } else if (performance.now() > hold.until) {
+          hold = undefined;
+        }
+      } else {
+        goTo(target);
+      }
+
+      // No tapar el pie de página: el robot sube lo que el footer asoma.
+      const overlap = footer ? Math.max(0, window.innerHeight - footer.getBoundingClientRect().top) : 0;
+      root.style.setProperty('--lift', `${overlap}px`);
+    };
+
+    const look = (x: number, y: number) => {
+      root.style.setProperty('--look-x', `${x.toFixed(2)}px`);
+      root.style.setProperty('--look-y', `${y.toFixed(2)}px`);
+    };
+
+    const onScroll = () => {
+      const y = window.scrollY;
+      if (!reduceMotion && y !== lastY) {
+        look(0, y > lastY ? 1.6 : -1.6);
+        clearTimeout(lookTimer);
+        lookTimer = window.setTimeout(() => look(0, 0), 450);
+      }
+      lastY = y;
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+
+    const onPointer = (event: PointerEvent) => {
+      if (reduceMotion || event.pointerType !== 'mouse') return;
+      const box = toggle.getBoundingClientRect();
+      const dx = event.clientX - (box.left + box.width / 2);
+      const dy = event.clientY - (box.top + box.height / 2);
+      const distance = Math.hypot(dx, dy) || 1;
+      const reach = Math.min(1, distance / 240) * 1.8;
+      look((dx / distance) * reach, (dy / distance) * reach);
+    };
+
+    const setMuted = (value: boolean) => {
+      muted = value;
+      try {
+        localStorage.setItem(STORAGE_KEY, value ? 'off' : 'on');
+      } catch {}
+    };
+
+    toggle.addEventListener(
+      'click',
+      () => {
+        const open = !root.classList.contains('is-open');
+        setMuted(!open);
+        setOpen(open);
+        if (open && current) say(messages[current.dataset.guide!]);
+      },
+      { signal },
+    );
+
+    close.addEventListener(
+      'click',
+      () => {
+        setMuted(true);
+        setOpen(false);
+        toggle.focus();
+      },
+      { signal },
+    );
+
+    root.addEventListener(
+      'click',
+      (event) => {
+        const button = (event.target as Element).closest<HTMLElement>('[data-guide-ask]');
+        if (button) ask(button.dataset.guideAsk!);
+      },
+      { signal },
+    );
+
+    // Reacciones: se escuchan en el documento para no acoplar la guía a cada componente.
+    document.addEventListener(
+      'click',
+      (event) => {
+        const target = event.target as Element;
+        if (root.contains(target)) return;
+
+        const copy = target.closest<HTMLElement>('[data-copy-email]');
+        if (copy) {
+          // El botón marca su estado al terminar de copiar; solo se celebra si salió bien.
+          setTimeout(() => copy.dataset.state === 'copied' && react('react.copied'), 150);
+        } else if (target.closest('[data-theme-toggle]')) {
+          react(document.documentElement.dataset.theme === 'dark' ? 'react.themeDark' : 'react.themeLight');
+        } else if (target.closest('[data-marquee-toggle]')) {
+          // El carrusel actualiza su estado en su propio listener; se lee después.
+          setTimeout(() => {
+            const paused = document.querySelector<HTMLElement>('[data-marquee]')?.dataset.paused === 'true';
+            react(paused ? 'react.paused' : 'react.playing');
+          });
+        } else if (target.closest('a[download]')) react('react.cv');
+        else if (target.closest('a[hreflang]')) {
+          try {
+            sessionStorage.setItem(LANG_FLAG, '1');
+          } catch {}
+        } else if (target.closest('main a[target="_blank"]')) react('react.external');
+      },
+      { signal },
+    );
+
+    // Otros componentes (la paleta de comandos) pueden pedirle una frase por su clave.
+    document.addEventListener('guide:say', (event) => react((event as CustomEvent<string>).detail), { signal });
+
+    window.addEventListener('scroll', onScroll, { passive: true, signal });
+    window.addEventListener('resize', onScroll, { passive: true, signal });
+    window.addEventListener('pointermove', onPointer, { passive: true, signal });
+
+    signal.addEventListener('abort', () => {
+      clearInterval(typeTimer);
+      clearTimeout(peekTimer);
+      clearTimeout(lookTimer);
+      clearTimeout(readyTimer);
+      cancelAnimationFrame(frame);
+    });
+
+    // Entra después de la animación del hero para no competir con el titular.
+    root.hidden = false;
+    const readyTimer = window.setTimeout(
+      () => {
+        root.classList.add('is-ready');
+        update();
+      },
+      reduceMotion ? 0 : 700,
+    );
+  }
+
+  document.addEventListener('astro:page-load', initGuide);
+</script>
