@@ -4,6 +4,8 @@ description: "Sitio trilingüe construido con Astro, content collections, View T
 tags: [Astro, TypeScript, Tailwind CSS, View Transitions]
 category: web
 cover: ../../../assets/projects/portfolio.png
+repo: https://github.com/YoshiLoL0526/my-portfolio
+demo: https://raidel-martinez.dev
 date: 2026-11-03
 order: 16
 color: green
@@ -18,4 +20,4 @@ Este portfolio es también un proyecto: un sitio estático trilingüe pensado pa
 - CV descargable en español, inglés y portugués, JSON-LD, OG image, sitemap, robots y metadatos por idioma.
 - Detalles de accesibilidad: foco visible, contraste, `prefers-reduced-motion` y contenido visible sin JS.
 
-La portada es una captura del propio sitio; el código no está publicado, pero la web sí.
+La portada es una captura del propio sitio; el código es público en GitHub.

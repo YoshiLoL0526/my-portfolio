@@ -1,7 +1,5 @@
 ---
 import { getCollection } from 'astro:content';
-import { Image } from 'astro:assets';
-import portrait from '@/assets/raidel.png';
 import { site } from '@/data/site';
 import { useTranslations } from '@/i18n/utils';
 import type { Lang } from '@/i18n/ui';
@@ -20,20 +18,8 @@ const [current] = (
 ---
 
 <div>
-  <div class="flex items-center gap-4 lg:block">
-    <Image
-      src={portrait}
-      alt=""
-      class="size-20 shrink-0 rounded-full object-cover lg:aspect-square lg:size-auto lg:w-full lg:rounded-xl"
-      widths={[80, 160, 384, 624]}
-      sizes="(min-width: 1024px) 384px, 80px"
-      loading="eager"
-    />
-    <div class="min-w-0 lg:mt-5">
-      <p class="font-semibold tracking-tight">{site.fullName}</p>
-      <p class="text-muted mt-0.5 text-sm">{t('meta.role')}</p>
-    </div>
-  </div>
+  <p class="font-semibold tracking-tight">{site.fullName}</p>
+  <p class="text-muted mt-0.5 text-sm">{t('meta.role')}</p>
 
   <dl class="border-border mt-5 border-t text-sm">
     {
