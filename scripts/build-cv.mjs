@@ -31,137 +31,48 @@ const rich = (value) =>
     .replace(/`([^`]+)`/g, '<code>$1</code>');
 
 const contact = (items) => items.map((item) => `<span>${escapeHtml(item)}</span>`).join('');
-const tags = (items) => items.map((item) => `<span class="tag">${escapeHtml(item)}</span>`).join('');
 
-const skillGroups = (groups) =>
-  groups
-    .map(
-      ({ title, items }) => `
-        <div class="skill-group">
-          <h3>${escapeHtml(title)}</h3>
-          <div class="tags">${tags(items)}</div>
-        </div>`,
-    )
-    .join('');
-
-const experience = (entries) =>
+const experience = (entries, labels) =>
   entries
     .map(
-      ({ role, company, date, location, bullets }) => `
+      ({ role, company, context, date, location, bullets, stack }) => `
         <article class="job">
-          <div class="job-head">
-            <h3>${escapeHtml(role)} — ${escapeHtml(company)}</h3>
-            <span class="job-date">${escapeHtml(date)}</span>
+          <div class="row">
+            <h3>${escapeHtml(role)} · <span class="company">${escapeHtml(company)}</span></h3>
+            <span class="date">${escapeHtml(date)}</span>
           </div>
-          <p class="job-meta">${escapeHtml(location)}</p>
+          <div class="row sub">
+            <span>${escapeHtml(context)}</span>
+            <span>${escapeHtml(location)}</span>
+          </div>
           <ul class="bullets">
             ${bullets.map((bullet) => `<li>${rich(bullet)}</li>`).join('')}
           </ul>
+          <p class="stack"><span>${escapeHtml(labels.stack)}:</span> ${escapeHtml(stack)}</p>
         </article>`,
     )
     .join('');
 
-const projects = (entries) =>
-  entries
-    .map(
-      ({ name, tech, body, link }) => `
-        <article class="project">
-          <div class="project-head">
-            <h3>${escapeHtml(name)}</h3>
-            <span class="tech">${escapeHtml(tech)}</span>
-          </div>
-          <p>${rich(body)}</p>
-          ${link ? `<p class="link">${escapeHtml(link)}</p>` : ''}
-        </article>`,
-    )
-    .join('');
+const skills = (groups) => `
+  <dl class="skills">
+    ${groups.map(({ title, items }) => `<dt>${escapeHtml(title)}</dt><dd>${escapeHtml(items)}</dd>`).join('')}
+  </dl>`;
 
-function pageFoot(data, page, total) {
-  return `
-    <div class="page-foot">
-      <span>${escapeHtml(data.name)} · ${escapeHtml(data.labels.cv)}</span>
-      <span>${escapeHtml(data.labels.page)} ${String(page).padStart(2, '0')} / ${String(total).padStart(2, '0')}</span>
-    </div>`;
-}
+const projects = (entries) => `
+  <ul class="projects">
+    ${entries
+      .map(
+        ({ name, body, link }) => `
+        <li>
+          <strong>${escapeHtml(name)}</strong>${link ? ` <span class="link">${escapeHtml(link)}</span>` : ''}
+          <span class="sep">—</span> ${rich(body)}
+        </li>`,
+      )
+      .join('')}
+  </ul>`;
 
 function renderCv(data) {
-  const page1 = `
-    <section class="page">
-      <header class="header">
-        <h1>${escapeHtml(data.name)}</h1>
-        <p class="role">${escapeHtml(data.role)}</p>
-        <p class="location">${escapeHtml(data.location)}</p>
-        <div class="contact">${contact(data.contact)}</div>
-      </header>
-      <div class="rule"></div>
-
-      <div class="grid">
-        <aside class="sidebar">
-          <div class="section">
-            <h2 class="section-title">${escapeHtml(data.labels.stack)}</h2>
-            ${skillGroups(data.skills)}
-          </div>
-        </aside>
-
-        <main class="main">
-          <section class="section">
-            <h2 class="section-title">${escapeHtml(data.labels.profile)}</h2>
-            <div class="profile"><p>${rich(data.profile)}</p></div>
-          </section>
-
-          <section class="section">
-            <h2 class="section-title">${escapeHtml(data.labels.experience)}</h2>
-            ${experience(data.experience)}
-          </section>
-        </main>
-      </div>
-      ${pageFoot(data, 1, 2)}
-    </section>`;
-
-  const page2 = `
-    <section class="page">
-      <div class="runhead">
-        <span>${escapeHtml(data.name)}</span>
-        <span class="line"></span>
-        <span>${escapeHtml(data.role)}</span>
-      </div>
-
-      <div class="grid">
-        <aside class="sidebar">
-          <div class="section">
-            <h2 class="section-title">${escapeHtml(data.labels.education)}</h2>
-            <div class="education">
-              <h3>${escapeHtml(data.education.title)}</h3>
-              <p>${escapeHtml(data.education.org)}</p>
-              <p>${escapeHtml(data.education.meta)}</p>
-              <p class="muted">${escapeHtml(data.education.dates)}</p>
-            </div>
-          </div>
-
-          <div class="section">
-            <h2 class="section-title">${escapeHtml(data.labels.languages)}</h2>
-            <ul class="language-list">
-              ${data.languages
-                .map(
-                  ({ name, level }) =>
-                    `<li><span>${escapeHtml(name)}</span><span class="muted">${escapeHtml(level)}</span></li>`,
-                )
-                .join('')}
-            </ul>
-          </div>
-        </aside>
-
-        <main class="main">
-          <section class="section">
-            <h2 class="section-title">${escapeHtml(data.labels.projects)}</h2>
-            ${projects(data.projects)}
-            <p class="footer-note">${rich(data.footer)}</p>
-          </section>
-        </main>
-      </div>
-      ${pageFoot(data, 2, 2)}
-    </section>`;
-
+  const { labels } = data;
   return `<!doctype html>
 <html lang="${data.lang}">
 <head>
@@ -190,279 +101,188 @@ function renderCv(data) {
       --muted: #627d98;
       --faint: #9fb3c8;
       --line: #d9e2ec;
-      --tag: #edf1f5;
       --accent: #2f7d72;
     }
 
     * { box-sizing: border-box; }
-    @page { size: A4; margin: 0; }
+    @page { size: A4; margin: 13mm 15mm 14mm; }
     html, body { margin: 0; padding: 0; background: #fff; }
     body {
       font-family: 'Inter', 'Segoe UI', sans-serif;
+      font-size: 9.2pt;
+      line-height: 1.45;
       color: var(--body);
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
-      font-variant-ligatures: common-ligatures;
     }
     strong { color: var(--ink); font-weight: 600; }
-    code {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.92em;
-      color: var(--ink);
-    }
-
-    .page {
-      position: relative;
-      width: 210mm;
-      height: 297mm;
-      padding: 15mm 14mm 13mm;
-      overflow: hidden;
-      background: #fff;
-      page-break-after: always;
-      break-after: page;
-    }
-    .page:last-child { page-break-after: auto; break-after: auto; }
+    p { margin: 0; }
 
     .header h1 {
       margin: 0;
-      font-size: 26pt;
-      line-height: 1.02;
+      font-size: 23pt;
+      line-height: 1.05;
       font-weight: 700;
-      letter-spacing: -0.035em;
+      letter-spacing: -0.03em;
       color: var(--ink);
     }
     .role {
-      margin: 6pt 0 0;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 7.6pt;
-      font-weight: 500;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: #334e68;
-    }
-    .location {
-      margin: 9pt 0 0;
-      font-size: 8.7pt;
-      color: var(--muted);
+      margin-top: 4pt;
+      font-size: 11pt;
+      font-weight: 600;
+      color: var(--accent);
     }
     .contact {
       display: flex;
       flex-wrap: wrap;
-      align-items: center;
-      margin-top: 2.5pt;
-      font-size: 8.7pt;
+      margin-top: 5pt;
+      font-size: 8.6pt;
       color: var(--muted);
     }
     .contact span + span::before {
-      content: '•';
+      content: '·';
       margin: 0 6pt;
       color: var(--faint);
     }
-    .rule {
-      height: 2px;
-      margin: 9pt 0 12pt;
-      background: var(--accent);
-    }
 
-    .grid {
-      display: grid;
-      grid-template-columns: 57mm minmax(0, 1fr);
-      gap: 9mm;
-      align-items: start;
-    }
-    .sidebar {
-      min-width: 0;
-      padding-right: 7mm;
-      border-right: 1px solid var(--line);
-    }
-    .main { min-width: 0; }
-
-    .section + .section { margin-top: 12pt; }
-    .section-title {
-      display: flex;
-      align-items: center;
-      gap: 7pt;
+    section { margin-top: 12pt; }
+    h2 {
       margin: 0 0 6pt;
+      padding-bottom: 3pt;
+      border-bottom: 1.5px solid var(--accent);
       font-family: 'JetBrains Mono', monospace;
-      font-size: 7pt;
-      font-weight: 500;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: #486581;
-      white-space: nowrap;
-    }
-    .section-title::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--line);
-    }
-
-    .skill-group { margin-bottom: 8pt; }
-    .skill-group:last-child { margin-bottom: 0; }
-    .skill-group h3 {
-      margin: 0 0 3pt;
-      font-size: 8.4pt;
+      font-size: 7.6pt;
       font-weight: 600;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
       color: var(--ink);
-    }
-    .tags { display: flex; flex-wrap: wrap; gap: 2.6pt; }
-    .tag {
-      padding: 1.4pt 4pt;
-      border-radius: 2pt;
-      background: var(--tag);
-      font-size: 7.3pt;
-      line-height: 1.35;
-      color: #334e68;
-      white-space: nowrap;
+      break-after: avoid;
     }
 
-    .profile p {
-      margin: 0;
-      font-size: 9.05pt;
-      line-height: 1.52;
-      text-align: justify;
-    }
+    .summary { text-align: justify; }
 
-    .job { margin-top: 9pt; break-inside: avoid; }
-    .job:first-of-type { margin-top: 0; }
-    .job-head {
+    .job { break-inside: avoid; }
+    .job + .job { margin-top: 9pt; }
+    .row {
       display: flex;
       align-items: baseline;
       justify-content: space-between;
-      gap: 5pt;
+      gap: 8pt;
     }
     .job h3 {
       margin: 0;
-      font-size: 9.9pt;
+      font-size: 10.2pt;
       font-weight: 600;
       color: var(--ink);
     }
-    .job-date {
+    .company { color: var(--accent); }
+    .date {
       flex-shrink: 0;
-      font-size: 7.9pt;
-      color: var(--muted);
+      font-size: 8.6pt;
+      font-weight: 500;
+      color: var(--ink);
       white-space: nowrap;
     }
-    .job-meta { margin: 1pt 0 0; font-size: 8.1pt; color: var(--muted); }
-    .bullets { margin: 3pt 0 0; padding: 0; list-style: none; }
-    .bullets li {
-      position: relative;
-      margin-bottom: 2.3pt;
-      padding-left: 9pt;
-      font-size: 8.85pt;
-      line-height: 1.45;
+    .sub {
+      margin-top: 0.5pt;
+      font-size: 8.3pt;
+      font-style: italic;
+      color: var(--muted);
     }
-    .bullets li::before {
-      content: '◇';
-      position: absolute;
-      top: -0.3pt;
-      left: 0;
-      font-size: 7pt;
-      color: var(--accent);
+    .bullets { margin: 3pt 0 0; padding-left: 11pt; }
+    .bullets li { margin-bottom: 1.8pt; padding-left: 1pt; }
+    .bullets li::marker { color: var(--accent); }
+    .stack {
+      margin-top: 2pt;
+      font-size: 8.2pt;
+      color: var(--muted);
     }
+    .stack span { font-weight: 600; color: #486581; }
 
-    .runhead {
-      display: flex;
-      align-items: center;
-      margin-bottom: 10pt;
+    .skills {
+      display: grid;
+      grid-template-columns: max-content 1fr;
+      gap: 2.5pt 10pt;
+      margin: 0;
+    }
+    .skills dt { font-weight: 600; color: var(--ink); }
+    .skills dd { margin: 0; }
+
+    .projects { margin: 0; padding-left: 11pt; }
+    .projects li { margin-bottom: 2.5pt; break-inside: avoid; }
+    .projects li::marker { color: var(--accent); }
+    .projects .link {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 6.8pt;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: #486581;
+      font-size: 7.4pt;
+      color: var(--muted);
     }
-    .runhead .line {
-      flex: 1;
-      height: 1px;
-      margin: 0 8pt;
-      background: var(--line);
-    }
+    .projects .sep { color: var(--faint); }
 
-    .education h3 {
-      margin: 0 0 2pt;
-      font-size: 9pt;
-      font-weight: 600;
-      color: var(--ink);
-    }
-    .education p { margin: 0; font-size: 8.3pt; line-height: 1.4; }
-    .education .muted { margin-top: 3pt; color: var(--muted); }
-    .language-list { margin: 0; padding: 0; list-style: none; }
-    .language-list li {
-      display: flex;
-      justify-content: space-between;
-      gap: 5pt;
-      padding: 4.5pt 0;
-      border-bottom: 1px solid var(--line);
-      font-size: 8.7pt;
-    }
-    .language-list li:last-child { border-bottom: 0; }
-    .muted { color: var(--muted); }
-
-    .project {
-      margin-top: 8pt;
-      padding-bottom: 7pt;
-      border-bottom: 1px solid var(--line);
+    .closing {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 14mm;
       break-inside: avoid;
     }
-    .project:first-of-type { margin-top: 0; }
-    .project:last-of-type { padding-bottom: 0; border-bottom: 0; }
-    .project-head {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 5pt;
-    }
-    .project h3 {
-      margin: 0;
-      font-size: 9.7pt;
-      font-weight: 600;
-      color: var(--ink);
-    }
-    .tech {
-      max-width: 55%;
-      overflow: hidden;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 6.7pt;
-      color: var(--muted);
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    .project p {
-      margin: 1.8pt 0 0;
-      font-size: 8.7pt;
-      line-height: 1.45;
-    }
-    .project .link {
-      margin-top: 1.5pt;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 7.1pt;
-      color: #486581;
-    }
-    .footer-note {
-      margin-top: 9pt;
-      font-size: 8.3pt;
-      line-height: 1.45;
-      color: #486581;
-    }
-
-    .page-foot {
-      position: absolute;
-      right: 14mm;
-      bottom: 7mm;
-      left: 14mm;
+    .closing section { margin-top: 12pt; }
+    .edu h3 { margin: 0; font-size: 9.6pt; font-weight: 600; color: var(--ink); }
+    .edu .muted { color: var(--muted); }
+    .edu .note { margin-top: 2pt; font-size: 8.4pt; }
+    .langs { margin: 0; padding: 0; list-style: none; }
+    .langs li {
       display: flex;
       justify-content: space-between;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 6.5pt;
-      letter-spacing: 0.08em;
-      color: var(--faint);
+      padding: 1.5pt 0;
     }
+    .langs .muted { color: var(--muted); }
   </style>
 </head>
 <body>
-  ${page1}
-  ${page2}
+  <header class="header">
+    <h1>${escapeHtml(data.name)}</h1>
+    <p class="role">${escapeHtml(data.role)}</p>
+    <div class="contact"><span>${escapeHtml(data.location)}</span>${contact(data.contact)}</div>
+  </header>
+
+  <section>
+    <h2>${escapeHtml(labels.profile)}</h2>
+    <p class="summary">${rich(data.profile)}</p>
+  </section>
+
+  <section>
+    <h2>${escapeHtml(labels.experience)}</h2>
+    ${experience(data.experience, labels)}
+  </section>
+
+  <section>
+    <h2>${escapeHtml(labels.skills)}</h2>
+    ${skills(data.skills)}
+  </section>
+
+  <section>
+    <h2>${escapeHtml(labels.projects)}</h2>
+    ${projects(data.projects)}
+  </section>
+
+  <div class="closing">
+    <section class="edu">
+      <h2>${escapeHtml(labels.education)}</h2>
+      <div class="row">
+        <h3>${escapeHtml(data.education.title)}</h3>
+        <span class="date">${escapeHtml(data.education.dates)}</span>
+      </div>
+      <p class="muted">${escapeHtml(data.education.org)}</p>
+      <p class="note">${escapeHtml(data.education.note)}</p>
+    </section>
+    <section>
+      <h2>${escapeHtml(labels.languages)}</h2>
+      <ul class="langs">
+        ${data.languages
+          .map(({ name, level }) => `<li><span>${escapeHtml(name)}</span><span class="muted">${escapeHtml(level)}</span></li>`)
+          .join('')}
+      </ul>
+    </section>
+  </div>
 </body>
 </html>`;
 }

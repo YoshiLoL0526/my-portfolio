@@ -11,7 +11,7 @@ export const site = {
   timeZone: 'America/Sao_Paulo',
   socials: [
     { label: 'GitHub', href: 'https://github.com/YoshiLoL0526' },
-    { label: 'LinkedIn', href: 'https://www.linkedin.com/in/raidel-martínez-santos' },
+    { label: 'LinkedIn', href: 'https://www.linkedin.com/in/raidel-martinez-santos' },
   ],
   // Idiomas hablados. Los años y el número de proyectos se calculan desde las colecciones.
   spokenLanguages: 3,
