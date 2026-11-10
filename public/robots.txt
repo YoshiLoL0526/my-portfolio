@@ -1,5 +1,4 @@
 User-agent: *
 Allow: /
 
-# TODO: cambia el dominio
-Sitemap: https://example.com/sitemap-index.xml
+Sitemap: https://raidel-martinez.dev/sitemap-index.xml

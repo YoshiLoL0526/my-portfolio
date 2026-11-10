@@ -3,8 +3,7 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
-// TODO: cambia por tu dominio de Hostinger antes de desplegar.
-const SITE = 'https://example.com';
+const SITE = 'https://raidel-martinez.dev';
 
 export default defineConfig({
   site: SITE,
