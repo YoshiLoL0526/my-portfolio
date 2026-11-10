@@ -2,7 +2,7 @@
 export const site = {
   name: 'Raidel',
   fullName: 'Raidel Martínez Santos',
-  role: 'Software Engineer · Backend & AI Automation',
+  role: 'Software Engineer · Full-stack & AI',
   email: 'yoshilol0526@gmail.com',
   location: { es: 'Curitiba, Brasil', en: 'Curitiba, Brazil', pt: 'Curitiba, Brasil' },
   // El CV cambia según el idioma de la página. Se regeneran con `npm run cv`.

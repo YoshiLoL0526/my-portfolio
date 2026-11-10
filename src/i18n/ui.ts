@@ -11,8 +11,8 @@ export const defaultLang: Lang = 'es';
 export const ui = {
   es: {
     'meta.description':
-      'Portfolio de Raidel Martínez Santos, ingeniero de software especializado en Python, TypeScript, agentes de IA y automatización.',
-    'meta.role': 'Ingeniero de software · Backend e IA',
+      'Portfolio de Raidel Martínez Santos, ingeniero de software que construye aplicaciones web, de escritorio y móviles de punta a punta, con IA y automatización integradas.',
+    'meta.role': 'Ingeniero de software · Full-stack e IA',
     'nav.about': 'Sobre mí',
     'nav.projects': 'Proyectos',
     'nav.experience': 'Experiencia',
@@ -21,9 +21,9 @@ export const ui = {
     'theme.toggle': 'Cambiar tema claro/oscuro',
     'lang.switch': 'Cambiar idioma',
     'hero.available': 'Disponible para nuevos proyectos',
-    'hero.title': 'Backend y agentes de IA|que llegan a producción.',
+    'hero.title': 'Aplicaciones completas|que llegan a producción.',
     'hero.subtitle':
-      'Ingeniero de software. Diseño APIs, automatizaciones y agentes LLM con Python y TypeScript, y me ocupo de que funcionen en producción. Hoy, en una plataforma de gestión clínica con IA.',
+      'Ingeniero de software. Construyo productos de punta a punta —web, escritorio y móvil— con Python, TypeScript y Rust, e integro agentes de IA donde aportan de verdad. Hoy, en una plataforma de gestión clínica con IA.',
     'hero.cta.projects': 'Ver proyectos',
     'hero.cta.contact': 'Hablemos',
     'hero.cta.cv': 'Descargar CV',
@@ -32,7 +32,7 @@ export const ui = {
     'hero.now': 'Ahora en',
     'about.title': 'Sobre mí',
     'about.body':
-      'Soy ingeniero de software y llevo más de {years} años construyendo productos completos: desde el diseño de la API y del modelo de datos hasta el despliegue y el mantenimiento en producción.|Lo que más me interesa es automatizar trabajo real con IA: agentes LLM, el Model Context Protocol y flujos con n8n. En el día a día trabajo con herramientas agénticas como Claude Code y Codex para orquestar subagentes, revisar código y llevar tareas del diseño a la implementación.|Ahora mismo trabajo en InvokeIA y, en paralelo, construyo Aurora, una librería de interfaces de escritorio para Python con núcleo en Rust. Trabajo en remoto, estoy abierto a reubicarme y hablo español nativo, inglés B2 y portugués A2.',
+      'Soy ingeniero de software y llevo más de {years} años construyendo productos completos: desde el diseño de la API y del modelo de datos hasta el despliegue y el mantenimiento en producción.|Me muevo por todas las capas: APIs con FastAPI, interfaces web con React y Next.js, apps móviles con React Native y aplicaciones de escritorio en Python. Cuando el producto lo pide, integro IA de verdad: agentes LLM, el Model Context Protocol y flujos con n8n. En el día a día trabajo con herramientas agénticas como Claude Code y Codex para orquestar subagentes, revisar código y llevar tareas del diseño a la implementación.|Ahora mismo trabajo en InvokeIA y, en paralelo, construyo Aurora, una librería de interfaces de escritorio para Python con núcleo en Rust. Trabajo en remoto, estoy abierto a reubicarme y hablo español nativo, inglés B2 y portugués A2.',
     'about.stats.title': 'Resumen',
     'about.stats.years': 'años de experiencia',
     'about.stats.projects': 'proyectos construidos',
@@ -112,7 +112,7 @@ export const ui = {
     'guide.q.now': "¿Qué hace ahora?",
     'guide.a.now': "Trabaja en InvokeIA, una plataforma de gestión clínica con IA, y en paralelo construye Aurora. Te llevo a su experiencia.",
     'guide.q.stack': "¿Con qué trabaja?",
-    'guide.a.stack': "Sobre todo Python y TypeScript: FastAPI, PostgreSQL, agentes LLM y MCP. Aquí tienes el stack completo.",
+    'guide.a.stack': "Sobre todo Python y TypeScript: FastAPI y PostgreSQL detrás, React, Next.js y React Native delante, y agentes LLM con MCP. Aquí tienes el stack completo.",
     'guide.q.best': "¿Su proyecto más técnico?",
     'guide.a.best': "Aurora: una librería de interfaces de escritorio para Python con núcleo en Rust. Rec Studio está construido sobre ella.",
     'guide.q.hire': "¿Está disponible?",
@@ -139,8 +139,8 @@ export const ui = {
   },
   en: {
     'meta.description':
-      'Portfolio of Raidel Martínez Santos, a software engineer focused on Python, TypeScript, AI agents and automation.',
-    'meta.role': 'Software Engineer · Backend & AI Automation',
+      'Portfolio of Raidel Martínez Santos, a software engineer building end-to-end web, desktop and mobile applications, with AI and automation built in.',
+    'meta.role': 'Software Engineer · Full-stack & AI',
     'nav.about': 'About',
     'nav.projects': 'Projects',
     'nav.experience': 'Experience',
@@ -149,9 +149,9 @@ export const ui = {
     'theme.toggle': 'Toggle light/dark theme',
     'lang.switch': 'Change language',
     'hero.available': 'Available for new projects',
-    'hero.title': 'Backend and AI agents|that make it to production.',
+    'hero.title': 'Complete applications|that make it to production.',
     'hero.subtitle':
-      'Software engineer. I design APIs, automations and LLM agents with Python and TypeScript, and I make sure they work in production. Currently on an AI-powered clinic management platform.',
+      'Software engineer. I build products end to end —web, desktop and mobile— with Python, TypeScript and Rust, and bring in AI agents where they actually add value. Currently on an AI-powered clinic management platform.',
     'hero.cta.projects': 'See projects',
     'hero.cta.contact': "Let's talk",
     'hero.cta.cv': 'Download CV',
@@ -160,7 +160,7 @@ export const ui = {
     'hero.now': 'Now at',
     'about.title': 'About me',
     'about.body':
-      "I'm a software engineer with {years}+ years building complete products: from API and data-model design through deployment and keeping things running in production.|What interests me most is automating real work with AI: LLM agents, the Model Context Protocol and n8n workflows. Day to day I work with agentic tools like Claude Code and Codex to orchestrate subagents, review code and take tasks from design to implementation.|Right now I work at InvokeIA and, on the side, I'm building Aurora, a desktop UI library for Python with a Rust core. I work remotely, I'm open to relocation, and I speak Spanish natively, English B2 and Portuguese A2.",
+      "I'm a software engineer with {years}+ years building complete products: from API and data-model design through deployment and keeping things running in production.|I work across every layer: APIs with FastAPI, web interfaces with React and Next.js, mobile apps with React Native and desktop applications in Python. When the product calls for it, I bring in AI that does real work: LLM agents, the Model Context Protocol and n8n workflows. Day to day I work with agentic tools like Claude Code and Codex to orchestrate subagents, review code and take tasks from design to implementation.|Right now I work at InvokeIA and, on the side, I'm building Aurora, a desktop UI library for Python with a Rust core. I work remotely, I'm open to relocation, and I speak Spanish natively, English B2 and Portuguese A2.",
     'about.stats.title': 'Summary',
     'about.stats.years': 'years of experience',
     'about.stats.projects': 'projects built',
@@ -240,7 +240,7 @@ export const ui = {
     'guide.q.now': "What is he doing now?",
     'guide.a.now': "He works at InvokeIA, an AI-powered clinic management platform, and builds Aurora on the side. Here's his experience.",
     'guide.q.stack': "What does he work with?",
-    'guide.a.stack': "Mostly Python and TypeScript: FastAPI, PostgreSQL, LLM agents and MCP. Here's the full stack.",
+    'guide.a.stack': "Mostly Python and TypeScript: FastAPI and PostgreSQL behind, React, Next.js and React Native in front, plus LLM agents with MCP. Here's the full stack.",
     'guide.q.best': "Most technical project?",
     'guide.a.best': "Aurora: a desktop UI library for Python with a Rust core. Rec Studio is built on top of it.",
     'guide.q.hire': "Is he available?",
@@ -267,8 +267,8 @@ export const ui = {
   },
   pt: {
     'meta.description':
-      'Portfólio de Raidel Martínez Santos, engenheiro de software especializado em Python, TypeScript, agentes de IA e automação.',
-    'meta.role': 'Engenheiro de Software · Backend e IA',
+      'Portfólio de Raidel Martínez Santos, engenheiro de software que constrói aplicações web, desktop e mobile de ponta a ponta, com IA e automação integradas.',
+    'meta.role': 'Engenheiro de Software · Full-stack e IA',
     'nav.about': 'Sobre mim',
     'nav.projects': 'Projetos',
     'nav.experience': 'Experiência',
@@ -277,9 +277,9 @@ export const ui = {
     'theme.toggle': 'Alternar tema claro/escuro',
     'lang.switch': 'Mudar de idioma',
     'hero.available': 'Disponível para novos projetos',
-    'hero.title': 'Backend e agentes de IA|que chegam à produção.',
+    'hero.title': 'Aplicações completas|que chegam à produção.',
     'hero.subtitle':
-      'Engenheiro de software. Projeto APIs, automações e agentes LLM com Python e TypeScript, e cuido para que funcionem em produção. Hoje, em uma plataforma de gestão clínica com IA.',
+      'Engenheiro de software. Construo produtos de ponta a ponta —web, desktop e mobile— com Python, TypeScript e Rust, e integro agentes de IA onde realmente agregam valor. Hoje, em uma plataforma de gestão clínica com IA.',
     'hero.cta.projects': 'Ver projetos',
     'hero.cta.contact': 'Vamos conversar',
     'hero.cta.cv': 'Baixar CV',
@@ -288,7 +288,7 @@ export const ui = {
     'hero.now': 'Agora na',
     'about.title': 'Sobre mim',
     'about.body':
-      'Sou engenheiro de software e há mais de {years} anos construo produtos completos: do design da API e do modelo de dados até o deploy e a manutenção em produção.|O que mais me interessa é automatizar trabalho real com IA: agentes LLM, o Model Context Protocol e fluxos com n8n. No dia a dia trabalho com ferramentas agênticas como Claude Code e Codex para orquestrar subagentes, revisar código e levar tarefas do design à implementação.|No momento trabalho na InvokeIA e, em paralelo, construo Aurora, uma biblioteca de interfaces desktop para Python com núcleo em Rust. Trabalho remotamente, estou aberto a relocação e falo espanhol nativo, inglês B2 e português A2.',
+      'Sou engenheiro de software e há mais de {years} anos construo produtos completos: do design da API e do modelo de dados até o deploy e a manutenção em produção.|Transito por todas as camadas: APIs com FastAPI, interfaces web com React e Next.js, apps mobile com React Native e aplicações desktop em Python. Quando o produto pede, integro IA de verdade: agentes LLM, o Model Context Protocol e fluxos com n8n. No dia a dia trabalho com ferramentas agênticas como Claude Code e Codex para orquestrar subagentes, revisar código e levar tarefas do design à implementação.|No momento trabalho na InvokeIA e, em paralelo, construo Aurora, uma biblioteca de interfaces desktop para Python com núcleo em Rust. Trabalho remotamente, estou aberto a relocação e falo espanhol nativo, inglês B2 e português A2.',
     'about.stats.title': 'Resumo',
     'about.stats.years': 'anos de experiência',
     'about.stats.projects': 'projetos construídos',
@@ -368,7 +368,7 @@ export const ui = {
     'guide.q.now': "O que ele faz agora?",
     'guide.a.now': "Trabalha na InvokeIA, uma plataforma de gestão clínica com IA, e em paralelo constrói a Aurora. Veja a experiência dele.",
     'guide.q.stack': "Com o que ele trabalha?",
-    'guide.a.stack': "Principalmente Python e TypeScript: FastAPI, PostgreSQL, agentes LLM e MCP. Aqui está a stack completa.",
+    'guide.a.stack': "Principalmente Python e TypeScript: FastAPI e PostgreSQL no back, React, Next.js e React Native no front, e agentes LLM com MCP. Aqui está a stack completa.",
     'guide.q.best': "Projeto mais técnico?",
     'guide.a.best': "Aurora: uma biblioteca de interfaces desktop para Python com núcleo em Rust. O Rec Studio é construído sobre ela.",
     'guide.q.hire': "Ele está disponível?",
