@@ -46,4 +46,5 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: ftps
           local-dir: ./dist/
-          server-dir: ${{ vars.FTP_SERVER_DIR || './public_html/' }}
+          # La cuenta FTP de Hostinger ya entra directamente en public_html.
+          server-dir: ${{ vars.FTP_SERVER_DIR || './' }}
